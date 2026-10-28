@@ -92,7 +92,7 @@ code{background:var(--paper-2);padding:.05em .3em}
 .filecard[data-state="file"] .fc-file{display:grid;gap:6px}
 .fc-name{font-size:1.05rem;font-weight:600;word-break:break-all;line-height:1.3}
 .fc-size{font:850 2.4rem/1 var(--display);font-stretch:72%}
-.fc-spec{font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
+.fc-spec{font-size:.82rem;letter-spacing:.02em}
 .filecard-src.drop-in{animation:dropin .55s var(--ease-drop) both}
 @keyframes dropin{from{transform:translateY(-70px) rotate(-14deg);opacity:0}to{transform:rotate(-3deg);opacity:1}}
 .accepts{display:flex;flex-wrap:wrap;gap:5px;list-style:none;padding:0;margin:16px 0 0}

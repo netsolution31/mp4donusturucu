@@ -159,7 +159,14 @@ function initTool(root) {
       const b = (table.find(([r]) => h >= r) || table[5])[1];
       const qf = { high: 1.4, balanced: 1, small: 0.55 }[el.q.value];
       const cf = el.codec.value === "h265" || el.codec.value === "vp9" ? 0.7 : el.codec.value === "mpeg4" ? 1.6 : 1;
-      kbps = b * qf * cf + (el.mute.checked ? 0 : 128);
+      kbps = b * qf * cf;
+      // a re-encode rarely needs more than the source bitrate scaled to the new pixel count
+      if (info.duration && info.w) {
+        const srcK = (info.size * 8) / 1024 / info.duration;
+        const px = (targetHeight() / Math.min(info.w, info.h)) ** 2;
+        kbps = Math.min(kbps, srcK * px * { high: 1, balanced: 0.7, small: 0.45 }[el.q.value]);
+      }
+      kbps += el.mute.checked ? 0 : 128;
     }
     return (kbps * dur) / 8 / 1024;
   }

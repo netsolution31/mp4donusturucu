@@ -36,7 +36,7 @@ export default [
     body: `<p class="answer">To convert MOV to MP4, drop the file above and press "Convert". Video is encoded with H.264 and audio with AAC, the most widely supported combination. This fixes the common problem of iPhone HEVC videos not playing on Windows, Android or web platforms.</p>
 <h2>What is MOV?</h2><p>MOV is Apple's QuickTime container. It is the default output of iPhone, iPad and Mac cameras and usually contains H.264 or HEVC (H.265) video with AAC audio. Professional workflows also store ProRes in MOV.</p>
 <h2>How to use it</h2>${steps("MOV", "MP4")}
-<h2>Recommended settings</h2>${h.table(["Goal", "Settings"], [["General sharing", "MP4, Balanced, Original resolution"], ["Archive or editing", "MP4, High"], ["Messaging / email", "MP4, Small file, 720p or a target size"]])}
+<h2>Recommended settings</h2>${h.table(["Goal", "Settings"], [["General sharing", "MP4, Balanced, Original resolution"], ["Archive or editing", "MP4, High"], ["Messaging / email", "MP4, Small file, 720p or a target size (see the <a href=\"../video-compressor/\">video compressor</a>)"]])}
 <h2>Troubleshooting</h2>${h.ul(["<strong>Black picture, audio plays:</strong> the source is probably HEVC. Keep H.264 as the codec.", "<strong>ProRes file is huge:</strong> try a short section first or lower the resolution.", "<strong>Video is sideways:</strong> apply a 90° or 270° rotation in advanced settings."])}`,
     faq: [privacyFaq, ["Will quality drop?", "Re-encoding has a theoretical loss, but at Balanced or High quality the difference is usually invisible."]],
     related: ["en/video-compressor/", "en/mkv-to-mp4/", "en/"],
@@ -76,7 +76,7 @@ ${h.table(["Quality", "Bitrate", "Size per minute"], [["Small file", "128 kbps",
     body: `<p class="answer">The three most effective ways to compress a video are lowering the bitrate (CRF or target size), lowering the resolution (for example 1080p to 720p) and using a more efficient codec (H.264 to H.265). This tool applies all three in your browser without uploading the file.</p>
 <h2>How to use it</h2>${steps("", "compressed MP4")}
 ${h.table(["Method", "Typical effect", "Visual impact"], [["Balanced → Small file", "Roughly halves the bitrate", "Slight softening in motion"], ["1080p → 720p", "56% fewer pixels", "Often invisible on phones"], ["H.264 → H.265", "Clearly smaller at same quality", "May not play on old devices"], ["Remove audio", "Saves 128 kbps", "No sound"]])}
-<h2>Compress to a target size</h2><p>Enter a value in <strong>Target size (MB)</strong>. The tool computes <code>video kbps = MB × 8192 × 0.94 ÷ duration − audio kbps</code>. The 6% margin covers container overhead and bitrate variation.</p>`,
+<h2>Compress to a target size</h2><p>Enter a value in <strong>Target size (MB)</strong>. The tool computes <code>video kbps = MB × 8192 × 0.94 ÷ duration − audio kbps</code>. The 6% margin covers container overhead and bitrate variation. iPhone recordings in HEVC are often already efficient; if they will not play elsewhere, use the <a href="../mov-to-mp4/">MOV to MP4 converter</a> instead.</p>`,
     faq: [privacyFaq, ["Why is my compressed file bigger?", "If the source already has a low bitrate or uses H.265, re-encoding with H.264 can increase size. Choose Small file, H.265 or a target size."]],
     related: ["en/", "en/mov-to-mp4/", "en/video-to-gif/"],
     sources: S("x264", "x265"),
@@ -98,6 +98,7 @@ ${h.table(["Setting", "Effect", "Tip"], [["Duration", "Size grows linearly", "2-
     desc: "mp4donusturucu.com is a privacy-first video converter that runs in your browser. Our principles and the open-source software we use.",
     body: `<p class="answer">mp4donusturucu.com is a free tool that converts and compresses video directly in your browser. Our core principle: your file should never leave your device.</p>
 <h2>Principles</h2>${h.ul(["<strong>Privacy:</strong> media files are not sent to any server in standard mode.", "<strong>Accuracy:</strong> technical content is based on primary sources such as FFmpeg and MDN documentation.", "<strong>Responsibility:</strong> the tool is for files you own or may use. We do not offer downloading from third-party platforms."])}
+<h2>How it works and how to verify it</h2><p>When you pick a file, the FFmpeg engine (about 31 MB, compiled to WebAssembly) is downloaded from this site and cached. Your file is read into browser memory, converted in a Web Worker and offered back as a local download link. To check it yourself, open your browser developer tools, go to the Network tab and run a conversion: apart from the engine files, no upload request appears.</p>
 <h2>Open source</h2><p>Built on <a href="https://ffmpeg.org/" rel="noopener">FFmpeg</a> and <a href="https://github.com/ffmpegwasm/ffmpeg.wasm" rel="noopener">ffmpeg.wasm</a>. The site's primary language is Turkish; see the <a href="../../nasil-calisir/">Turkish "how it works" page</a> for technical details.</p>`,
   }),
   page({

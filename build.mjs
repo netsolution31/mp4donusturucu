@@ -80,21 +80,21 @@ function faqBlock(p, u) {
 function schema(p, u) {
   const g = [];
   if (p.home) {
-    g.push({ "@type": "Organization", "@id": abs("#org"), name: ORG.name, url: ORG.url, logo: abs("assets/icon.svg") });
-    g.push({ "@type": "WebSite", "@id": abs("#site"), url: ORG.url, name: "MP4 Dönüştürücü", inLanguage: ["tr", "en", "fr"], publisher: { "@id": abs("#org") } });
+    g.push({ "@type": "Organization", "@id": abs("#org"), name: ORG.name, url: ORG.url, logo: abs("assets/og.png"), alternateName: "MP4 Dönüştürücü", description: "Tarayıcı tabanlı, gizlilik öncelikli video dönüştürme ve sıkıştırma araçları." });
+    g.push({ "@type": "WebSite", "@id": abs("#site"), url: ORG.url, name: "MP4 Dönüştürücü", alternateName: "mp4donusturucu.com", inLanguage: ["tr", "en", "fr"], publisher: { "@id": abs("#org") } });
   }
-  if (p.tool) {
+  if (p.tool || p.calc) {
     g.push({
-      "@type": "WebApplication", name: strip(p.h1), url: abs(p.path), applicationCategory: "MultimediaApplication", operatingSystem: "Web", inLanguage: p.lang,
+      "@type": "WebApplication", name: strip(p.h1), url: abs(p.path), applicationCategory: p.calc ? "UtilitiesApplication" : "MultimediaApplication", isAccessibleForFree: true, operatingSystem: "Web", inLanguage: p.lang,
       description: p.desc, browserRequirements: "Requires JavaScript and WebAssembly",
-      featureList: u.features, offers: { "@type": "Offer", price: "0", priceCurrency: "TRY" }, publisher: { "@id": abs("#org") },
+      featureList: p.calc ? undefined : u.features, offers: { "@type": "Offer", price: "0", priceCurrency: "TRY" }, publisher: { "@id": abs("#org") },
     });
   }
   if (p.type === "guide") {
     g.push({ "@type": "Article", headline: strip(p.h1), description: p.desc, inLanguage: p.lang, dateModified: UPDATED, datePublished: UPDATED, mainEntityOfPage: abs(p.path), author: { "@type": "Organization", name: ORG.name, url: ORG.url }, publisher: { "@id": abs("#org") } });
   }
-  if (p.crumbs?.length) {
-    g.push({ "@type": "BreadcrumbList", itemListElement: [[u.home, u.homePath], ...p.crumbs, [strip(p.short || p.h1), p.path]].map(([n, x], i) => ({ "@type": "ListItem", position: i + 1, name: n, item: abs(x) })) });
+  if (!p.home && !p.noindex) {
+    g.push({ "@type": "BreadcrumbList", itemListElement: [[u.home, u.homePath], ...(p.crumbs || []), [strip(p.short || p.h1), p.path]].map(([n, x], i) => ({ "@type": "ListItem", position: i + 1, name: n, item: abs(x) })) });
   }
   if (p.faq?.length) {
     g.push({ "@type": "FAQPage", mainEntity: p.faq.map(([q, a]) => ({ "@type": "Question", name: strip(q), acceptedAnswer: { "@type": "Answer", text: strip(a) } })) });
@@ -126,7 +126,7 @@ function layout(p) {
   const head = p.tool
     ? `<section class="hero"><div>${crumbs}<h1>${p.h1}</h1><p class="lead">${p.lead}</p><ul class="shield">${u.shield.map((s) => `<li>${s}</li>`).join("")}</ul></div>${toolBlock(p, u)}</section>`
     : `<div style="padding-top:28px">${crumbs}<h1>${p.h1}</h1>${p.lead ? `<p class="lead">${p.lead}</p>` : ""}${p.type === "guide" ? `<p class="updated">${u.updated}: <time datetime="${UPDATED}">${u.date}</time> · ${u.byline}</p>` : ""}</div>`;
-  const privacy = p.tool ? `<aside class="privacy">${SHIELD}<div><h3 style="margin-top:0">${u.privTitle}</h3><p>${u.privText}</p></div></aside>` : "";
+  const privacy = p.tool ? `<aside class="privacy">${SHIELD}<div><h3 style="margin-top:0">${u.privTitle}</h3><p>${u.privText} <a href="${href(u.howPath)}">${u.howLabel}</a></p></div></aside>` : "";
   const sources = p.sources ? `<p class="sources">${u.sourcesLabel}: ${p.sources.map(([n, x]) => `<a href="${x}" rel="noopener">${n}</a>`).join(" · ")}</p>` : "";
   const title = p.title;
   return `<!doctype html>
@@ -144,7 +144,11 @@ ${p.noindex ? "" : alternates(p)}
 <meta property="og:url" content="${abs(p.path)}">
 <meta property="og:site_name" content="mp4donusturucu.com">
 <meta property="og:locale" content="${u.locale}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${abs("assets/og.png")}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="mp4donusturucu.com">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#080A0F">
 <link rel="icon" href="${href("assets/icon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -66,8 +66,8 @@ const frJS = {
 
 export const UI = {
   tr: {
-    homePath: "", home: "Ana sayfa", locale: "tr_TR", skip: "İçeriğe geç", navLabel: "Ana menü",
-    nav: [["Dönüştürücü", "video-donusturucu/"], ["Sıkıştır", "video-sikistirma/"], ["Formatlar", "formatlar/"], ["Nasıl çalışır", "nasil-calisir/"]],
+    homePath: "", home: "Ana sayfa", howPath: "nasil-calisir/", howLabel: "Nasıl çalıştığını ve kendiniz nasıl doğrulayabileceğinizi okuyun.", locale: "tr_TR", skip: "İçeriğe geç", navLabel: "Ana menü",
+    nav: [["Tüm araçlar", "araclar/"], ["Sıkıştır", "video-sikistirma/"], ["Rehberler", "rehberler/"], ["Nasıl çalışır", "nasil-calisir/"]],
     shield: ["Dosya yüklenmez", "Tarayıcıda işlenir", "Sunucuda saklanmaz"],
     tool: {
       pick: "Video dosyası seç", drop: "Videonuzu buraya bırakın", dropSub: "veya dosya seçmek için dokunun", out: "Çıktı formatı", quality: "Kalite",
@@ -86,12 +86,12 @@ export const UI = {
     footerLegal: "Yalnızca sahibi olduğunuz veya kullanım izniniz bulunan dosyaları dönüştürün.",
     footer: [
       ["Dönüştürücüler", ["mov-mp4-donusturucu/", "mkv-mp4-donusturucu/", "avi-mp4-donusturucu/", "webm-mp4-donusturucu/", "mp4-mp3-donusturucu/", "mp4-gif-donusturucu/", "mp4-webm-donusturucu/"]],
-      ["Araçlar ve rehberler", ["video-sikistirma/", "video-kesme/", "video-kirpma/", "video-boyutu-hesaplayici/", "formatlar/", "codec/", "mp4-nedir/"]],
+      ["Araçlar ve rehberler", ["araclar/", "video-sikistirma/", "video-kesme/", "video-kirpma/", "video-boyutu-hesaplayici/", "rehberler/", "formatlar/", "codec/"]],
       ["Kurumsal", ["hakkimizda/", "nasil-calisir/", "metodoloji/", "guvenlik/", "gizlilik/", "cerezler/", "kvkk-aydinlatma-metni/", "kullanim-sartlari/", "telif-hakki/", "iletisim/"]],
     ],
   },
   en: {
-    homePath: "en/", home: "Home", locale: "en_US", skip: "Skip to content", navLabel: "Main menu",
+    homePath: "en/", home: "Home", howPath: "en/about/", howLabel: "How it works and how to verify it yourself.", locale: "en_US", skip: "Skip to content", navLabel: "Main menu",
     nav: [["Converter", "en/"], ["Compress", "en/video-compressor/"], ["MOV to MP4", "en/mov-to-mp4/"], ["About", "en/about/"]],
     shield: ["No upload", "Runs in your browser", "Nothing stored on a server"],
     tool: {
@@ -116,7 +116,7 @@ export const UI = {
     ],
   },
   fr: {
-    homePath: "fr/", home: "Accueil", locale: "fr_FR", skip: "Aller au contenu", navLabel: "Menu principal",
+    homePath: "fr/", home: "Accueil", howPath: "fr/a-propos/", howLabel: "Fonctionnement et vérification par vous-même.", locale: "fr_FR", skip: "Aller au contenu", navLabel: "Menu principal",
     nav: [["Convertisseur", "fr/"], ["Compresser", "fr/compresser-video/"], ["MOV en MP4", "fr/mov-en-mp4/"], ["À propos", "fr/a-propos/"]],
     shield: ["Aucun envoi", "Traitement dans le navigateur", "Rien n'est stocké"],
     tool: {

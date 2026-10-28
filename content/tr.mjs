@@ -7,12 +7,12 @@ const FMT = {
     n: "MOV", ext: ".mov", dev: "Apple (QuickTime)", codecs: "H.264, HEVC (H.265), ProRes / AAC", web: "Safari evet; Chrome ve Edge codec'e bağlı (HEVC çoğu zaman oynamaz)", use: "iPhone, iPad ve Mac kayıtları, Final Cut Pro",
     what: "MOV, Apple'ın QuickTime kapsayıcı formatıdır. iPhone, iPad ve Mac kameralarının varsayılan çıktısıdır ve çoğunlukla H.264 veya HEVC (H.265) video ile AAC ses içerir. Profesyonel kameralar ve kurgu programları MOV içinde ProRes gibi çok yüksek bit hızlı codec'ler de kullanır.",
     why: "Windows bilgisayarlar, birçok Android cihaz, bazı akıllı TV'ler, LMS platformları ve web siteleri özellikle HEVC kodlu MOV dosyalarını açamayabilir. H.264 kodlu MP4 ise neredeyse her cihazda ve tarayıcıda sorunsuz oynatılır.",
-    trouble: ["<strong>Görüntü siyah, ses var:</strong> Kaynak muhtemelen HEVC. Çıktıda codec olarak H.264 seçili kalsın.", "<strong>ProRes dosyası çok büyük:</strong> ProRes kayıtları dakikada gigabaytlara ulaşabilir; tarayıcı belleği yetmezse önce kısa bir bölümle deneyin veya çözünürlüğü düşürün.", "<strong>Video yan dönmüş:</strong> Gelişmiş ayarlardan 90° veya 270° döndürme uygulayın."],
-    faq: ["iPhone videosu neden Windows'ta açılmıyor?", "iPhone varsayılan olarak HEVC (Yüksek Verimlilik) formatında kaydeder. Windows'ta HEVC desteği ek codec paketi gerektirebilir. Videoyu H.264 kodlu MP4'e dönüştürmek bu sorunu ortadan kaldırır."],
+    trouble: ["<strong>Görüntü siyah, ses var:</strong> Kaynak muhtemelen HEVC. Çıktıda codec olarak H.264 seçili kalsın; ayrıntılar için <a href=\"../h265-h264-donusturucu/\">HEVC'yi H.264'e dönüştürme</a> sayfasına bakın.", "<strong>ProRes dosyası çok büyük:</strong> ProRes kayıtları dakikada gigabaytlara ulaşabilir; tarayıcı belleği yetmezse önce kısa bir bölümle deneyin veya çözünürlüğü düşürün.", "<strong>Video yan dönmüş:</strong> Gelişmiş ayarlardan 90° veya 270° döndürme uygulayın ya da <a href=\"../video-dondurme/\">video döndürme aracını</a> kullanın."],
+    faq: ["iPhone videosu neden Windows'ta açılmıyor?", "iPhone varsayılan olarak HEVC (Yüksek Verimlilik) formatında kaydeder. Windows'ta HEVC desteği ek codec paketi gerektirebilir. Videoyu H.264 kodlu MP4'e dönüştürmek bu sorunu ortadan kaldırır. iPhone'a özel ayarlar için <a href=\"../iphone-video-mp4/\">iPhone videosunu MP4'e dönüştürme</a> rehberine bakın."],
   },
   mkv: {
     n: "MKV", ext: ".mkv", dev: "Matroska (açık standart)", codecs: "H.264, HEVC, VP9, AV1 / AAC, AC-3, DTS, FLAC, Opus", web: "Resmî destek yok; bazı tarayıcılar codec'e göre oynatabilir", use: "Arşiv, çok dilli ses ve altyazılı videolar, OBS kayıtları",
-    what: "MKV (Matroska Video), açık ve ücretsiz bir kapsayıcı formattır. Tek dosyada birden fazla ses parçası, altyazı ve bölüm bilgisi taşıyabilir. Bu esneklik arşivleme için idealdir ancak telefonlar, akıllı TV'ler, iPhone ve birçok kurgu programı MKV'yi doğrudan desteklemez.",
+    what: "MKV (Matroska Video), açık ve ücretsiz bir kapsayıcı formattır. Tek dosyada birden fazla ses parçası, altyazı ve bölüm bilgisi taşıyabilir. Bu esneklik arşivleme için idealdir ancak telefonlar, akıllı TV'ler, iPhone ve birçok kurgu programı MKV'yi doğrudan desteklemez. Ayrıntılar: <a href=\"../mkv-nedir/\">MKV nedir?</a>",
     why: "MKV'yi MP4'e dönüştürmek; iPhone'da oynatmak, video düzenleme programlarına aktarmak, web sitesine yüklemek veya sosyal medyada paylaşmak için en pratik yoldur. OBS ile MKV olarak kaydettiğiniz yayınları da bu şekilde paylaşılabilir hale getirebilirsiniz.",
     trouble: ["<strong>Altyazılar kayboldu:</strong> Araç video ve ana ses parçasını dönüştürür; altyazı parçaları MP4 çıktısına eklenmez.", "<strong>Yanlış dilde ses:</strong> FFmpeg varsayılan olarak en çok kanallı ses parçasını seçer. Farklı bir dil gerekiyorsa masaüstü FFmpeg ile <code>-map</code> parametresi kullanılmalıdır.", "<strong>DTS veya AC-3 ses:</strong> Bu sesler MP4 uyumluluğu için otomatik olarak AAC'ye dönüştürülür."],
     faq: ["MKV MP4'e dönüştürülünce altyazılar korunur mu?", "Hayır. Bu araç video ve ana ses parçasını MP4'e aktarır; MKV içindeki altyazı parçaları çıktıya eklenmez. Altyazı gerekiyorsa ayrı bir SRT dosyası olarak saklamanızı öneririz."],
@@ -27,7 +27,7 @@ const FMT = {
   webm: {
     n: "WebM", ext: ".webm", dev: "Google (2010)", codecs: "VP8, VP9, AV1 / Vorbis, Opus", web: "Chrome, Firefox, Edge evet; Safari sürüme bağlı", use: "Web sayfaları, tarayıcı ekran kayıtları, açık kaynak projeler",
     what: "WebM, Google'ın 2010'da duyurduğu, web için tasarlanmış açık ve telifsiz bir formattır. Matroska tabanlıdır ve VP8, VP9 veya AV1 video ile Vorbis veya Opus ses içerir. Tarayıcı ekran kaydı araçları çoğu zaman WebM üretir.",
-    why: "WebM tarayıcılarda iyi çalışır ancak WhatsApp, PowerPoint, birçok video düzenleyici, eski iPhone'lar ve akıllı TV'ler WebM'i desteklemeyebilir. MP4 (H.264 + AAC) bu ortamların neredeyse hepsinde çalışır.",
+    why: "WebM tarayıcılarda iyi çalışır ancak WhatsApp, PowerPoint, birçok video düzenleyici, eski iPhone'lar ve akıllı TV'ler WebM'i desteklemeyebilir. MP4 (H.264 + AAC) bu ortamların neredeyse hepsinde çalışır. İki formatın karşılaştırması: <a href=\"../webm-mi-mp4-mu/\">WebM mi MP4 mü?</a>",
     trouble: ["<strong>AV1 kodlu WebM açılmıyor:</strong> Tarayıcı içi motorumuz şu anda AV1 kod çözmeyi desteklemiyor. VP8 ve VP9 kodlu WebM dosyaları sorunsuz dönüştürülür.", "<strong>Ekran kaydında süre bilgisi yok:</strong> Tarayıcıda kaydedilen bazı WebM dosyalarında süre bilgisi eksiktir; bu durumda ilerleme yüzdesi tahmini gösterilebilir, sonuç etkilenmez."],
     faq: ["WebM'i MP4'e dönüştürmek kaliteyi düşürür mü?", "Her yeniden kodlama teorik olarak küçük bir kayıp içerir. \"Yüksek\" kalite ayarıyla (H.264, CRF 20) fark çıplak gözle genellikle görülmez. Dosya boyutu kaynağa göre biraz artabilir veya azalabilir."],
   },
@@ -77,7 +77,7 @@ const FMT = {
 
 const OUTF = {
   webm: { n: "WebM", codec: "VP9 + Opus", use: "Web sayfalarına gömme, açık kaynak projeler", dev: "Google (2010)", web: "Chrome, Firefox, Edge evet; Safari sürüme bağlı",
-    why: "WebM, web için tasarlanmış telifsiz bir formattır. VP9 codec'i aynı görsel kalitede H.264'e göre genellikle daha küçük dosya üretir; bu da web sitenizde bant genişliği tasarrufu sağlar. Tarayıcı içinde VP9 kodlama H.264'e göre belirgin şekilde daha yavaştır; kısa klipler için idealdir.",
+    why: "WebM, web için tasarlanmış telifsiz bir formattır. VP9 codec'i aynı görsel kalitede H.264'e göre genellikle daha küçük dosya üretir; bu da web sitenizde bant genişliği tasarrufu sağlar. Tarayıcı içinde VP9 kodlama H.264'e göre belirgin şekilde daha yavaştır; kısa klipler için idealdir. Emin değilseniz <a href=\"../webm-mi-mp4-mu/\">WebM mi MP4 mü?</a> karşılaştırmasını okuyun.",
     settings: [["Web sitesi arka plan videosu", "720p, Küçük dosya, sesi kaldır"], ["Genel web videosu", "1080p, Dengeli"], ["Yüksek kalite arşiv", "Orijinal, Yüksek"]],
     faq: ["MP4 yerine WebM kullanmalı mıyım?", "Web sitesi için ikisini birlikte sunmak en iyisidir: önce WebM, yedek olarak MP4. Tek format seçecekseniz uyumluluk için MP4 daha güvenlidir."] },
   mov: { n: "MOV", codec: "H.264 + AAC", use: "Apple iş akışları, QuickTime", dev: "Apple (QuickTime)", web: "Safari evet; diğerleri codec'e bağlı",
@@ -89,11 +89,11 @@ const OUTF = {
     settings: [["Eski DVD oynatıcı", "480p, Dengeli"], ["Araç multimedya sistemi", "720p, Dengeli"]],
     faq: ["AVI dosyası neden MP4'ten büyük?", "MPEG-4 Part 2, H.264'ten daha eski ve daha az verimli bir codec'tir. Aynı kalite için daha yüksek bit hızı gerekir."] },
   gif: { n: "GIF", codec: "GIF (256 renk paleti)", use: "Sessiz döngüler, tepki animasyonları, dokümantasyon", dev: "CompuServe (1987)", web: "Her yerde",
-    why: "GIF her platformda otomatik oynayan sessiz bir döngü sunar. Ancak GIF bir video formatı değildir: en fazla 256 renk kullanır ve aynı klip MP4'e göre çok daha büyük olabilir. Bu araç her video için ayrı renk paleti üreterek kaliteyi artırır.",
+    why: "GIF her platformda otomatik oynayan sessiz bir döngü sunar. Ancak GIF bir video formatı değildir: en fazla 256 renk kullanır ve aynı klip MP4'e göre çok daha büyük olabilir. Bu araç her video için ayrı renk paleti üreterek kaliteyi artırır. MP4 dışındaki kaynaklar ve boyut ipuçları için <a href=\"../video-gif-donusturucu/\">video GIF dönüştürücü</a> sayfasına bakın.",
     settings: [["Sohbet / tepki GIF'i", "480 px, 12 FPS, 2-5 sn"], ["Dokümantasyon ekran kaydı", "720 px, 15 FPS"], ["En küçük boyut", "360 px, 10-12 FPS"]],
     faq: ["GIF neden bu kadar büyük?", "GIF kareleri video codec'leri gibi verimli sıkıştırmaz. Süreyi kısaltmak, genişliği 480 piksele düşürmek ve FPS'i 10-12'ye indirmek boyutu en çok azaltan ayarlardır."] },
   mp3: { n: "MP3", codec: "MP3 (LAME)", use: "Müzik çalarlar, podcast, ses notları", dev: "Fraunhofer / MPEG", web: "Her yerde",
-    why: "Videonuzun yalnızca sesine ihtiyacınız varsa MP3 en evrensel ses formatıdır. Varsayılan 192 kbps, konuşma ve müzik için iyi bir denge sağlar. Yüksek ayar 256 kbps, küçük ayar 128 kbps kullanır.",
+    why: "Videonuzun yalnızca sesine ihtiyacınız varsa MP3 en evrensel ses formatıdır. Varsayılan 192 kbps, konuşma ve müzik için iyi bir denge sağlar. Yüksek ayar 256 kbps, küçük ayar 128 kbps kullanır. Kaynağınız MOV, MKV veya AVI ise <a href=\"../video-mp3-donusturucu/\">video MP3 dönüştürücü</a> aynı işi yapar.",
     settings: [["Konuşma / podcast", "Küçük dosya (128 kbps)"], ["Müzik", "Dengeli (192 kbps) veya Yüksek (256 kbps)"]],
     faq: ["Videodan çıkarılan sesin kalitesi orijinalden iyi olur mu?", "Hayır. MP3 kayıplı bir formattır; kaynak sesin kalitesini aşamaz. 192 kbps ve üzeri çoğu dinleyici için orijinalden ayırt edilemez."] },
   wav: { n: "WAV", codec: "PCM 16 bit (sıkıştırılmamış)", use: "Ses kurgusu, transkripsiyon, stüdyo", dev: "Microsoft ve IBM", web: "Her yerde",
@@ -115,8 +115,8 @@ const steps3 = (src, dst) => h.steps([
 ]);
 
 const qualityBlock = `<h2>Kalite ve dosya boyutu</h2>
-<p>Çıktı boyutunu belirleyen üç ana etken vardır: <strong>bit hızı</strong> (saniyedeki veri miktarı), <strong>çözünürlük</strong> ve <strong>süre</strong>. Basit formül: <code>boyut (MB) ≈ (video kbps + ses kbps) × süre (sn) ÷ 8 ÷ 1024</code>. Araç, dosyayı seçtiğiniz anda tahmini çıktı boyutunu gösterir.</p>
-<p>"Dengeli" ayarı H.264 için CRF 24 kullanır; çoğu video için gözle görülür kayıp olmadan iyi bir boyut sağlar. "Yüksek" (CRF 20) arşiv ve kurgu için, "Küçük dosya" (CRF 29) paylaşım için uygundur. Kesin bir boyut gerekiyorsa gelişmiş ayarlardaki <a href="../video-boyutu-hesaplayici/">hedef boyut</a> alanını kullanın.</p>`;
+<p>Çıktı boyutunu belirleyen üç ana etken vardır: <strong><a href="../video-bitrate-nedir/">bit hızı</a></strong> (saniyedeki veri miktarı), <strong>çözünürlük</strong> ve <strong>süre</strong>. Basit formül: <code>boyut (MB) ≈ (video kbps + ses kbps) × süre (sn) ÷ 8 ÷ 1024</code>. Araç, dosyayı seçtiğiniz anda tahmini çıktı boyutunu gösterir.</p>
+<p>"Dengeli" ayarı H.264 için <a href="../crf-nedir/">CRF</a> 24 kullanır; çoğu video için gözle görülür kayıp olmadan iyi bir boyut sağlar. "Yüksek" (CRF 20) arşiv ve kurgu için, "Küçük dosya" (CRF 29) paylaşım için uygundur. Kesin bir boyut gerekiyorsa gelişmiş ayarlardaki <a href="../video-boyutu-hesaplayici/">hedef boyut</a> alanını kullanın.</p>`;
 
 function xToMp4(k, extra = {}) {
   const F = FMT[k];
@@ -128,21 +128,21 @@ function xToMp4(k, extra = {}) {
     desc: `${F.n} videolarını tarayıcınızda MP4'e dönüştürün. Dosya sunucuya yüklenmez, kayıt veya filigran yok. H.264, kalite, çözünürlük ve hedef boyut ayarları.`,
     h1: `${F.n} → MP4 Dönüştürücü`, short: `${F.n} → MP4`, cardText: `${F.n} dosyalarını evrensel MP4'e çevirin`,
     lead: `${F.n} videonuzu MP4 formatına tarayıcınızda dönüştürün. Desteklenen cihazlarda dosya sunucuya yüklenmeden yerel olarak işlenir.`,
-    crumbs: [["Video dönüştürücü", "video-donusturucu/"]],
+    crumbs: [["Video araçları", "araclar/"]],
     tool: { out: "mp4" },
     body: `<p class="answer">${F.n} dosyasını MP4'e dönüştürmek için videoyu yukarıdaki alana bırakın ve "Dönüştür"e basın. Video H.264, ses AAC ile yeniden kodlanır; bu kombinasyon telefonlarda, bilgisayarlarda, akıllı TV'lerde ve tarayıcılarda en geniş desteğe sahiptir. İşlem cihazınızda yapılır, dosyanız yüklenmez.</p>
 <h2>${F.n} nedir?</h2><p>${F.what}</p>
 <h2>Nasıl kullanılır?</h2>${steps3(F.n, "MP4")}
 <h2>Ne zaman MP4'e dönüştürmelisiniz?</h2><p>${F.why}</p>
-<h2>Önerilen ayarlar</h2>${h.table(["Amaç", "Ayar"], [["Genel kullanım, paylaşım", "MP4, Dengeli, Orijinal çözünürlük"], ["Arşiv veya kurgu", "MP4, Yüksek, Orijinal çözünürlük"], ["WhatsApp / e-posta", "MP4, Küçük dosya, 720p veya hedef boyut"], ["En küçük dosya (yeni cihazlar)", "MP4, Codec: H.265, Dengeli"]])}
+<h2>Önerilen ayarlar</h2>${h.table(["Amaç", "Ayar"], [["Genel kullanım, paylaşım", "MP4, Dengeli, Orijinal çözünürlük"], ["Arşiv veya kurgu", "MP4, Yüksek, Orijinal çözünürlük"], ["WhatsApp / e-posta", "MP4, Küçük dosya, 720p veya hedef boyut"], ["En küçük dosya (yeni cihazlar)", "MP4, Codec: H.265, Dengeli (<a href=\"../h264-h265-farki/\">H.264 ve H.265 farkı</a>)"]])}
 ${qualityBlock}
 <h2>${F.n} ve MP4 karşılaştırması</h2>${h.table(["Özellik", F.n, "MP4"], [["Geliştiren", F.dev, CMP_MP4.dev], ["Yaygın codec'ler (video / ses)", F.codecs, CMP_MP4.codecs], ["Tarayıcıda oynatma", F.web, CMP_MP4.web], ["Tipik kullanım", F.use, CMP_MP4.use]])}
-<h2>Sorun giderme</h2>${h.ul([...F.trouble, "<strong>İşlem çok yavaş:</strong> Tarayıcı içi dönüştürme tek iş parçacığında çalışır. Çözünürlüğü 720p'ye düşürmek süreyi belirgin şekilde kısaltır.", "<strong>Sekme çöktü:</strong> Cihaz belleği yetmemiş olabilir. Diğer sekmeleri kapatın veya videoyu Başlangıç/Bitiş alanlarıyla parçalara ayırın."])}`,
+<h2>Sorun giderme</h2>${h.ul([...F.trouble, "<strong>İşlem çok yavaş:</strong> Tarayıcı içi dönüştürme tek iş parçacığında çalışır. <a href=\"../video-boyutlandirma/\">Çözünürlüğü 720p'ye düşürmek</a> süreyi belirgin şekilde kısaltır.", "<strong>Sekme çöktü:</strong> Cihaz belleği yetmemiş olabilir. Diğer sekmeleri kapatın veya videoyu <a href=\"../video-kesme/\">Başlangıç/Bitiş alanlarıyla parçalara ayırın</a>."])}`,
     faq: [
       [`${F.n} MP4'e dönüştürülünce kalite düşer mi?`, `Yeniden kodlama teorik olarak küçük bir kayıp içerir. "Dengeli" veya "Yüksek" ayarlarda bu fark çoğu videoda gözle fark edilmez. Kaliteyi korumak için çözünürlüğü "Orijinal" bırakın ve kaynak zaten düşük kaliteliyse yükseltme yapmayın.`],
       ["Dosyam sunucuya yükleniyor mu?", "Hayır. Dönüştürme, FFmpeg'in WebAssembly sürümüyle tamamen tarayıcınızda yapılır. Video cihazınızdan çıkmaz; sayfayı kapattığınızda bellekten silinir."],
       F.faq,
-      ["Dönüştürme ne kadar sürer?", "Videonun süresine, çözünürlüğüne ve cihazınızın işlemcisine bağlıdır. Modern bir bilgisayarda 1080p bir video çoğu zaman gerçek süresinin birkaç katında işlenir; 720p seçmek işlemi hızlandırır."],
+      ["Dönüştürme ne kadar sürer?", "Videonun süresine, çözünürlüğüne ve cihazınızın işlemcisine bağlıdır. Tarayıcı içi kodlama masaüstü programlardan yavaştır: kendi testimizde 5 saniyelik 960×540 bir videonun H.264 MP4'e dönüştürülmesi yaklaşık 47 saniye sürdü (Chrome, Windows, 28 Ekim 2026). 720p veya daha düşük çözünürlük seçmek işlemi hızlandırır."],
     ],
     related: [rev, "video-sikistirma/", "formatlar/", "codec/", "h264-h265-farki/", "video-boyutu-hesaplayici/", ...(extra.related || [])].filter(Boolean),
     sources: S("ffFormats", "x264", "mdnFormats"),
@@ -160,7 +160,7 @@ function mp4ToX(k, extra = {}) {
     desc: `MP4 videolarını tarayıcınızda ${O.n} formatına dönüştürün. Dosya yüklenmez. ${audio ? "Ses kalitesi seçimi ve kesme." : "Kalite, çözünürlük, FPS ve kesme ayarları."}`,
     h1: `MP4 → ${O.n} Dönüştürücü`, short: `MP4 → ${O.n}`, cardText: O.use,
     lead: `MP4 videonuzu ${O.n} formatına tarayıcınızda dönüştürün. Desteklenen cihazlarda dosya sunucuya yüklenmeden yerel olarak işlenir.`,
-    crumbs: [["Video dönüştürücü", "video-donusturucu/"]],
+    crumbs: [["Video araçları", "araclar/"]],
     tool: { out: k, ...(k === "gif" ? { res: "480", adv: "1" } : {}) },
     body: `<p class="answer">MP4'ü ${O.n} formatına dönüştürmek için dosyanızı yukarıya bırakın; çıktı ${O.n} olarak hazır gelir. Araç ${O.codec} kullanır. ${audio ? "Yalnızca ses parçası alınır, görüntü atılır." : ""} Tüm işlem tarayıcınızda gerçekleşir, dosyanız yüklenmez.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("MP4", O.n)}
@@ -176,11 +176,11 @@ ${audio ? `<h2>Ses kalitesi ve boyut</h2><p>Ses dosyası boyutu yalnızca bit h�
 }
 
 function special(o) {
-  return { lang: "tr", type: "tool", crumbs: [["Video araçları", "video-donusturucu/"]], sources: S("ffCodecs", "x264", "wasm"), ...o, title: P(o.title) };
+  return { lang: "tr", type: "tool", crumbs: [["Video araçları", "araclar/"]], sources: S("ffCodecs", "x264", "wasm"), ...o, title: P(o.title) };
 }
 
 function guide(o) {
-  return { lang: "tr", type: "guide", crumbs: [["Rehberler", "formatlar/"]], ...o, title: P(o.title) };
+  return { lang: "tr", type: "guide", crumbs: [["Rehberler", "rehberler/"]], ...o, title: P(o.title) };
 }
 function page(o) {
   return { lang: "tr", type: "page", ...o, title: P(o.title) };
@@ -198,6 +198,7 @@ pages.push({
   tool: { out: "mp4" },
   body: `<p class="answer">MP4 dönüştürücü, video dosyalarını MP4 kapsayıcısına dönüştüren bir araçtır. mp4donusturucu.com işlemi desteklenen tarayıcılarda cihazınızda gerçekleştirir; dosyanız sunucuya yüklenmeden H.264, H.265 veya VP9 gibi uygun codec seçenekleriyle yeniden kodlanabilir.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("Herhangi bir", "MP4")}
+<p>Tüm giriş ve çıkış formatlarını, codec ve gelişmiş ayarları tek sayfada görmek isterseniz <a href="video-donusturucu/">video dönüştürücü</a> sayfasını kullanın.</p>
 <h2>Popüler dönüştürmeler</h2>
 <div class="chips" style="justify-content:flex-start">${["mov", "mkv", "avi", "webm", "3gp", "m4v", "mpeg", "ts", "flv", "ogv"].map((k) => `<a class="chip" href="${k}-mp4-donusturucu/">${FMT[k].n} → MP4</a>`).join("")}${["webm", "mov", "avi", "gif", "mp3", "wav"].map((k) => `<a class="chip" href="mp4-${k}-donusturucu/">MP4 → ${OUTF[k].n}</a>`).join("")}</div>
 <h2>Neden mp4donusturucu.com?</h2>
@@ -206,7 +207,10 @@ ${h.table(["Özellik", "Açıklama"], [["Yükleme yok", "Dönüştürme WebAssem
 <p><strong>Giriş:</strong> <span class="mono">MP4, MOV, MKV, AVI, WebM, MPEG, MPG, M4V, 3GP, FLV, TS, MTS, M2TS, OGV, GIF</span><br><strong>Çıkış:</strong> <span class="mono">MP4, WebM, MOV, MKV, AVI, GIF, MP3, M4A, WAV, OGG</span></p>
 <p>Formatlar ve codec'ler arasındaki farkları <a href="formatlar/">video formatları rehberinde</a> ve <a href="codec/">codec rehberinde</a> ayrıntılı olarak açıklıyoruz.</p>
 <h2>MP4 nedir?</h2>
-<p>MP4 (MPEG-4 Part 14), video, ses ve altyazıyı tek dosyada taşıyan bir kapsayıcı formattır. Genellikle H.264 video ve AAC ses içerir ve bugün telefonlardan akıllı TV'lere kadar en geniş desteğe sahip video formatıdır. Daha fazlası için <a href="mp4-nedir/">MP4 nedir?</a> rehberine bakın.</p>`,
+<p>MP4 (MPEG-4 Part 14), video, ses ve altyazıyı tek dosyada taşıyan bir kapsayıcı formattır. Genellikle H.264 video ve AAC ses içerir ve bugün telefonlardan akıllı TV'lere kadar en geniş desteğe sahip video formatıdır. Daha fazlası için <a href="mp4-nedir/">MP4 nedir?</a> rehberine bakın.</p>
+<h2>Düzenleme, ses ve platform araçları</h2>
+<div class="chips" style="justify-content:flex-start">${[["video-kesme/", "Video kesme"], ["video-kirpma/", "Video kırpma (9:16, 1:1)"], ["video-boyutlandirma/", "Video boyutlandırma"], ["video-dondurme/", "Video döndürme"], ["video-ses-kaldirma/", "Videodan ses kaldırma"], ["video-ses-cikarma/", "Videodan ses çıkarma"], ["video-mp3-donusturucu/", "Video → MP3"], ["video-gif-donusturucu/", "Video → GIF"], ["gif-mp4-donusturucu/", "GIF → MP4"], ["h265-h264-donusturucu/", "HEVC → H.264"], ["iphone-video-mp4/", "iPhone video → MP4"], ["whatsapp-video-kucultme/", "WhatsApp için küçült"], ["25-mb-video-kucultme/", "25 MB altına küçült"], ["instagram-video-boyutu/", "Instagram video boyutu"], ["tiktok-video-boyutu/", "TikTok video boyutu"], ["video-boyutu-hesaplayici/", "Boyut hesaplayıcı"]].map(([x, n]) => `<a class="chip" href="${x}">${n}</a>`).join("")}</div>
+<p>Tüm araçlar kullanım amacına göre <a href="araclar/">araçlar sayfasında</a>, format ve codec rehberleri ise <a href="rehberler/">rehberler sayfasında</a> listelenir.</p>`,
   faq: [
     ["MP4 dönüştürücü ücretsiz mi?", "Evet. Tüm dönüştürme araçları ücretsizdir, hesap gerektirmez ve çıktıya filigran eklemez."],
     ["Videom sunucuya yükleniyor mu?", "Hayır. Dönüştürme tarayıcınızda, WebAssembly ile derlenmiş FFmpeg tarafından yapılır. Video cihazınızdan çıkmaz ve hiçbir yerde saklanmaz."],
@@ -221,7 +225,7 @@ ${h.table(["Özellik", "Açıklama"], [["Yükleme yok", "Dönüştürme WebAssem
 pages.push(special({
   path: "video-donusturucu/", title: "Video Dönüştürücü: Tüm Formatlar, Ücretsiz ve Yüklemesiz",
   desc: "Online video dönüştürücü: MP4, WebM, MOV, MKV, AVI, GIF, MP3 ve daha fazlası. Tarayıcıda çalışır, dosya yüklenmez. Codec, kalite ve çözünürlük seçimi.",
-  h1: "Video Dönüştürücü", short: "Video dönüştürücü", crumbs: [],
+  h1: "Video Dönüştürücü", short: "Video dönüştürücü",
   lead: "Herhangi bir videoyu MP4, WebM, MOV, MKV, AVI, GIF veya ses formatlarına dönüştürün. Tüm işlem tarayıcınızda yapılır.",
   tool: { out: "mp4", adv: "1" },
   body: `<p class="answer">Video dönüştürücü, bir videonun kapsayıcı formatını (ör. MOV → MP4) ve gerekirse codec'ini (ör. HEVC → H.264) değiştirir. Bu araç 15'ten fazla giriş formatını okuyabilir ve 10 çıkış formatı üretir; dönüştürme cihazınızda FFmpeg ile yapılır.</p>
@@ -260,7 +264,7 @@ pages.push(special({
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "GIF")}
 <h2>GIF boyutunu küçültmenin yolları</h2>${h.table(["Ayar", "Etkisi", "Öneri"], [["Süre", "Boyut süreyle doğrusal artar", "2-6 saniye"], ["Genişlik (Çözünürlük alanı)", "Piksel sayısı karesel etkiler", "360-480 px"], ["FPS", "Kare sayısını belirler", "10-15"], ["İçerik", "Sabit arka plan daha iyi sıkışır", "Az hareketli sahneler"]])}
 <p>Not: GIF çıktısında çözünürlük alanı <strong>genişlik</strong> olarak uygulanır ve en fazla 720 pikseldir.</p>
-<h2>GIF mi, MP4 mü?</h2><p>Sohbet uygulamaları ve sosyal ağlar çoğu zaman GIF'leri arka planda videoya çevirir. Web sitenizde otomatik oynayan sessiz bir döngü istiyorsanız <code>&lt;video autoplay muted loop playsinline&gt;</code> ile MP4 kullanmak, aynı görüntüyü çok daha küçük boyutla sunar.</p>`,
+<h2>GIF mi, MP4 mü?</h2><p>Sohbet uygulamaları ve sosyal ağlar çoğu zaman GIF'leri arka planda videoya çevirir. Web sitenizde otomatik oynayan sessiz bir döngü istiyorsanız <code>&lt;video autoplay muted loop playsinline&gt;</code> ile MP4 kullanmak, aynı görüntüyü çok daha küçük boyutla sunar. Elinizde zaten bir GIF varsa <a href="../gif-mp4-donusturucu/">GIF'i MP4'e dönüştürerek</a> küçültebilirsiniz.</p>`,
   faq: [["Videodan GIF yaparken ses ne olur?", "GIF formatı ses desteklemez; ses parçası otomatik olarak atılır."], ["En fazla kaç saniyelik GIF yapabilirim?", "Teknik bir sınır yoktur, ancak 10 saniyeyi aşan GIF'ler çok büyük olur. Uzun klipler için MP4 tercih edin."]],
   related: ["mp4-gif-donusturucu/", "gif-mp4-donusturucu/", "video-kesme/", "video-sikistirma/"],
 }));
@@ -282,18 +286,18 @@ pages.push(special({
 pages.push(special({
   path: "video-sikistirma/", key: "compress", title: "Video Sıkıştırma: Kaliteyi Koruyarak Video Küçültme",
   desc: "Videoyu online sıkıştırın: hedef boyut (MB), kalite, çözünürlük ve H.265 seçenekleri. Dosya yüklenmez, tarayıcınızda işlenir. Ücretsiz, filigransız.",
-  h1: "Video Sıkıştırma", short: "Video sıkıştırma", crumbs: [], cardText: "Kaliteyi koruyarak video boyutunu küçültün",
+  h1: "Video Sıkıştırma", short: "Video sıkıştırma", cardText: "Kaliteyi koruyarak video boyutunu küçültün",
   lead: "Video dosyanızı kaliteyi mümkün olduğunca koruyarak küçültün. Belirli bir boyuta sığdırmanız gerekiyorsa hedef MB değerini girin.",
   tool: { out: "mp4", quality: "small", adv: "1" },
   body: `<p class="answer">Bir videoyu sıkıştırmanın en etkili üç yolu: bit hızını düşürmek (CRF veya hedef boyut), çözünürlüğü düşürmek (ör. 1080p → 720p) ve daha verimli bir codec kullanmaktır (H.264 → H.265). Bu araç üçünü de tarayıcınızda, dosyayı yüklemeden uygular.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "sıkıştırılmış MP4")}
 <h2>Hangi yöntem ne kadar küçültür?</h2>
-${h.table(["Yöntem", "Tipik etki", "Görsel etki"], [["Kalite: Dengeli → Küçük dosya", "Bit hızı yaklaşık yarıya iner", "Hareketli sahnelerde hafif yumuşama"], ["1080p → 720p", "Piksel sayısı %56 azalır", "Telefon ekranında çoğu zaman fark edilmez"], ["H.264 → H.265", "Aynı kalitede belirgin şekilde daha küçük", "Eski cihazlarda oynamayabilir"], ["60 FPS → 30 FPS", "Hareketli içerikte bit hızı düşer", "Hareket daha az akıcı"], ["Sesi kaldırma", "128 kbps tasarruf", "Ses yok"]])}
+${h.table(["Yöntem", "Tipik etki", "Görsel etki"], [["Kalite: Dengeli → Küçük dosya", "Bit hızı yaklaşık yarıya iner (<a href=\"../crf-nedir/\">CRF</a> +5)", "Hareketli sahnelerde hafif yumuşama"], ["<a href=\"../video-boyutlandirma/\">1080p → 720p</a>", "Piksel sayısı %56 azalır", "Telefon ekranında çoğu zaman fark edilmez"], ["H.264 → H.265", "Aynı kalitede belirgin şekilde daha küçük", "Eski cihazlarda oynamayabilir (<a href=\"../h264-h265-farki/\">H.264 ve H.265 farkı</a>)"], ["60 FPS → 30 FPS", "Hareketli içerikte bit hızı düşer", "Hareket daha az akıcı"], ["<a href=\"../video-ses-kaldirma/\">Sesi kaldırma</a>", "128 kbps tasarruf", "Ses yok"]])}
 <h2>Hedef boyuta sıkıştırma</h2>
 <p>Gelişmiş ayarlarda <strong>Hedef boyut (MB)</strong> alanına bir değer girdiğinizde araç gerekli video bit hızını hesaplar: <code>video kbps = hedef MB × 8192 × 0,94 ÷ süre − ses kbps</code>. %6'lık pay, kapsayıcı ek yükü ve bit hızı dalgalanması içindir. Çok kısa bir hedef çok uzun bir video için gerçekçi değilse kalite belirgin şekilde düşer; bu durumda çözünürlüğü de düşürün. Hesabı önceden yapmak için <a href="../video-boyutu-hesaplayici/">video boyutu hesaplayıcıyı</a> kullanın.</p>
 <h2>Platformlara göre öneriler</h2>
-${h.table(["Kullanım", "Öneri"], [["WhatsApp", "720p, Küçük dosya veya <a href=\"../whatsapp-video-kucultme/\">WhatsApp aracı</a>"], ["E-posta eki", "<a href=\"../25-mb-video-kucultme/\">25 MB altı</a> hedef boyut"], ["Instagram / TikTok", "1080×1920, Dengeli, H.264"], ["Web sitesi", "720p veya 1080p, Küçük dosya, sesi kaldır (arka plan videosu)"]])}
-<p>Daha fazla teknik ayrıntı için <a href="../video-sikistirma-rehberi/">video sıkıştırma rehberine</a> bakın.</p>`,
+${h.table(["Kullanım", "Öneri"], [["WhatsApp", "720p, Küçük dosya veya <a href=\"../whatsapp-video-kucultme/\">WhatsApp aracı</a>"], ["E-posta eki", "<a href=\"../25-mb-video-kucultme/\">25 MB altı</a> hedef boyut"], ["Instagram / TikTok", "1080×1920, Dengeli, H.264 (<a href=\"../instagram-video-boyutu/\">Instagram ölçüleri</a>, <a href=\"../tiktok-video-boyutu/\">TikTok ölçüleri</a>)"], ["Web sitesi", "720p veya 1080p, Küçük dosya, sesi kaldır (arka plan videosu)"]])}
+<p>Kaynağınız zaten MP4 ise <a href="../mp4-sikistirma/">MP4 sıkıştırma</a> sayfasındaki codec önerilerine de göz atın. Daha fazla teknik ayrıntı için <a href="../video-sikistirma-rehberi/">video sıkıştırma rehberine</a> bakın.</p>`,
   faq: [["Kalite kaybı olmadan video sıkıştırılabilir mi?", "Matematiksel olarak kayıpsız sıkıştırma, boyutu anlamlı ölçüde küçültmez. Ancak doğru CRF değeriyle kayıp gözle fark edilmeyecek düzeyde tutulabilir. Kaynak zaten verimli kodlanmışsa (ör. telefon HEVC kaydı) kazanç sınırlı olabilir."], ["Sıkıştırılmış video neden orijinalden büyük çıktı?", "Kaynak zaten düşük bit hızlıysa veya H.265 ile kodlanmışsa, H.264 ile yeniden kodlamak dosyayı büyütebilir. Kalite ayarını Küçük dosya yapın, H.265 seçin veya hedef boyut girin."], ["Dosyam yükleniyor mu?", "Hayır. Sıkıştırma tamamen tarayıcınızda yapılır."]],
   related: ["mp4-sikistirma/", "25-mb-video-kucultme/", "whatsapp-video-kucultme/", "video-boyutu-hesaplayici/", "kalite-kaybetmeden-video-kucultme/", "crf-nedir/"],
   sources: S("x264", "x265", "wasm"),
@@ -322,7 +326,7 @@ pages.push(special({
   body: `<p class="answer">Video kesmek için dosyanızı seçin, gelişmiş ayarlarda <strong>Başlangıç</strong> ve <strong>Bitiş</strong> alanlarına saniye cinsinden değer girin (ör. 12.5 ve 47) ve "Dönüştür"e basın. Yalnızca bu aralık yeniden kodlanır; çıktı kare hassasiyetinde başlar.</p>
 <h2>Nasıl kullanılır?</h2>${h.steps(["<strong>Dosyayı seçin.</strong> Video süresi otomatik algılanır ve Bitiş alanında gösterilir.", "<strong>Aralığı girin.</strong> Dakika:saniye yerine toplam saniye kullanın. Örnek: 1:30 = 90.", "<strong>Dönüştürün.</strong> Kesilen bölüm MP4 olarak indirilmeye hazır olur."])}
 ${h.table(["Zaman", "Saniye"], [["0:30", "30"], ["1:00", "60"], ["1:30", "90"], ["2:15", "135"], ["5:00", "300"]])}
-<h2>İpuçları</h2>${h.ul(["Kesmeyi sıkıştırmayla birleştirin: hedef boyut alanı kesilen süreye göre hesaplanır.", "GIF yapmak için çıktı formatını GIF olarak değiştirin.", "Videonun sesini atmak istiyorsanız \"Sesi kaldır\" seçeneğini işaretleyin."])}`,
+<h2>İpuçları</h2>${h.ul(["Kesmeyi sıkıştırmayla birleştirin: hedef boyut alanı kesilen süreye göre hesaplanır.", "GIF yapmak için çıktı formatını GIF olarak değiştirin veya <a href=\"../video-gif-donusturucu/\">video GIF dönüştürücüyü</a> kullanın.", "Videonun sesini atmak istiyorsanız \"Sesi kaldır\" seçeneğini işaretleyin (<a href=\"../video-ses-kaldirma/\">videodan ses kaldırma</a>)."])}`,
   faq: [["Video kesmek kaliteyi düşürür mü?", "Araç kesilen bölümü yeniden kodlar; Yüksek kalite ayarında fark gözle görülmez. Bu yöntem, anahtar kare sınırına bağlı kalmadan tam istediğiniz saniyeden başlamayı sağlar."]],
   related: ["video-kirpma/", "video-gif-donusturucu/", "video-sikistirma/", "video-dondurme/"],
 }));
@@ -335,7 +339,7 @@ pages.push(special({
   body: `<p class="answer">Video kırpma, görüntünün kenarlarını keserek en-boy oranını değiştirir. Örneğin 16:9 yatay bir videoyu 9:16 oranına kırpmak, Reels, TikTok ve Shorts için dikey bir video üretir. Araç merkezden kırpar; görüntünün ortasındaki konu korunur.</p>
 <h2>Oranlar ve kullanım alanları</h2>${h.table(["Oran", "Örnek boyut", "Kullanım"], [["9:16", "1080×1920", "Reels, TikTok, YouTube Shorts, hikâyeler"], ["4:5", "1080×1350", "Instagram akış gönderisi"], ["1:1", "1080×1080", "Kare gönderiler, reklamlar"], ["16:9", "1920×1080", "YouTube, TV, sunum"]])}
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "kırpılmış MP4")}
-<p>Not: "Kırpma" bazen bir videonun süresini kısaltmak anlamında da kullanılır. Süreyi kısaltmak için <a href="../video-kesme/">video kesme aracını</a> kullanın.</p>`,
+<p>Not: "Kırpma" bazen bir videonun süresini kısaltmak anlamında da kullanılır. Süreyi kısaltmak için <a href="../video-kesme/">video kesme aracını</a>, oranı koruyarak yalnızca çözünürlüğü değiştirmek için <a href="../video-boyutlandirma/">video boyutlandırma aracını</a> kullanın.</p>`,
   faq: [["Kırpma yerine siyah bant eklenebilir mi?", "Bu sürümde araç yalnızca merkezden kırpar. Siyah bantlı (letterbox) çıktı ileride eklenecek."]],
   related: ["video-kesme/", "instagram-video-boyutu/", "tiktok-video-boyutu/", "video-boyutlandirma/"],
 }));
@@ -370,7 +374,7 @@ pages.push(special({
   h1: "Videodan Ses Çıkarma", short: "Ses çıkarma", lead: "Videonuzdaki ses parçasını ayrı bir ses dosyası olarak kaydedin. Format seçimi sizde.",
   tool: { out: "m4a" },
   body: `<p class="answer">Videodan ses çıkarmak, görüntüyü atıp ses parçasını seçtiğiniz formatta kaydeder. M4A (AAC) iyi kalite/boyut dengesi sunar, MP3 en evrensel formattır, WAV düzenleme için sıkıştırılmamış ses, OGG (Vorbis) ise açık bir alternatiftir.</p>
-${h.table(["Format", "Tür", "Boyut (dakika)", "En iyi kullanım"], [["M4A (AAC 192k)", "Kayıplı", "~1,4 MB", "Apple cihazlar, genel"], ["MP3 (192k)", "Kayıplı", "~1,4 MB", "Her cihaz"], ["WAV (PCM)", "Sıkıştırılmamış", "~10 MB", "Düzenleme, transkripsiyon"], ["OGG (Vorbis)", "Kayıplı", "~1,2 MB", "Oyunlar, açık kaynak"]])}
+${h.table(["Format", "Tür", "Boyut (dakika)", "En iyi kullanım"], [["M4A (AAC 192k)", "Kayıplı", "~1,4 MB", "Apple cihazlar, genel"], ["<a href=\"../video-mp3-donusturucu/\">MP3 (192k)</a>", "Kayıplı", "~1,4 MB", "Her cihaz"], ["<a href=\"../mp4-wav-donusturucu/\">WAV (PCM)</a>", "Sıkıştırılmamış", "~10 MB", "Düzenleme, transkripsiyon"], ["OGG (Vorbis)", "Kayıplı", "~1,2 MB", "Oyunlar, açık kaynak"]])}
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "ses dosyası")}`,
   faq: [["Hangi ses formatı en iyi kaliteyi verir?", "Ek kayıp istemiyorsanız WAV seçin. Paylaşım için M4A veya MP3 192 kbps çoğu kulak için orijinalden ayırt edilemez."]],
   related: ["video-mp3-donusturucu/", "mp4-wav-donusturucu/", "video-ses-kaldirma/", "mp4-mp3-donusturucu/"],
@@ -410,7 +414,7 @@ pages.push(special({
   body: `<p class="answer">iPhone, "Yüksek Verimlilik" ayarında videoları HEVC (H.265) codec'iyle MOV dosyası olarak kaydeder. Bu dosyalar Windows, bazı Android cihazlar ve web platformlarında sorun çıkarabilir. H.264 kodlu MP4'e dönüştürmek bu sorunu çözer.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("iPhone MOV", "MP4")}
 <h2>iPhone'da doğrudan H.264 kaydetmek</h2><p>Ayarlar → Kamera → Formatlar bölümünde "En Uyumlu" seçeneği, yeni kayıtların H.264 olarak yapılmasını sağlar. Bu, dosya boyutunu artırır ancak dönüştürme ihtiyacını ortadan kaldırır.</p>
-<h2>Önerilen ayarlar</h2>${h.table(["Amaç", "Ayar"], [["Windows / PowerPoint", "MP4, H.264, Dengeli"], ["WhatsApp", "MP4, 720p, Küçük dosya"], ["Arşiv (küçük)", "MP4, H.265, Yüksek"]])}
+<h2>Önerilen ayarlar</h2>${h.table(["Amaç", "Ayar"], [["Windows / PowerPoint", "MP4, H.264, Dengeli"], ["<a href=\"../whatsapp-video-kucultme/\">WhatsApp</a>", "MP4, 720p, Küçük dosya"], ["Arşiv (küçük)", "MP4, H.265, Yüksek"]])}
 <p>4K 60 FPS iPhone kayıtları büyük dosyalardır; tarayıcıda işlerken 1080p ve 30 FPS seçmek süreyi önemli ölçüde kısaltır.</p>`,
   faq: [["iPhone HDR videoları ne olur?", "HDR (Dolby Vision / HLG) videolar standart dinamik aralıklı H.264'e dönüştürülürken renkler biraz soluk görünebilir. Bu sürümde ton eşleme uygulanmaz."]],
   related: ["mov-mp4-donusturucu/", "h265-h264-donusturucu/", "whatsapp-video-kucultme/", "h264-h265-farki/"],
@@ -451,7 +455,7 @@ pages.push(special({
   tool: { out: "mp4", aspect: "9:16", res: "1080", adv: "1" },
   body: `<p class="answer">Instagram Reels ve hikâyeler için önerilen video boyutu 1080×1920 piksel (9:16), akış gönderileri için 1080×1350 (4:5) veya 1080×1080 (1:1) kullanılır. En sorunsuz yükleme için H.264 video ve AAC ses içeren MP4 tercih edin.</p>
 ${socialSpec}
-<p>Platformların süre ve dosya boyutu sınırları sık değişir; paylaşmadan önce Instagram Yardım Merkezi'ndeki güncel değerleri kontrol edin.</p>
+<p>Platformların süre ve dosya boyutu sınırları sık değişir; paylaşmadan önce Instagram Yardım Merkezi'ndeki güncel değerleri kontrol edin. Oranı değiştirmek için <a href="../video-kirpma/">video kırpma aracını</a>, yalnızca çözünürlüğü değiştirmek için <a href="../video-boyutlandirma/">video boyutlandırma aracını</a> kullanabilirsiniz.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "Instagram'a hazır MP4")}`,
   faq: [["Instagram yüklediğim videoyu neden bulanıklaştırıyor?", "Platform her videoyu yeniden sıkıştırır. Kaynağı tam 1080 piksel genişlikte, H.264 ve yeterli bit hızıyla (Dengeli veya Yüksek) hazırlamak sonucu iyileştirir."]],
   related: ["tiktok-video-boyutu/", "video-kirpma/", "video-boyutlandirma/", "video-sikistirma/"],
@@ -463,14 +467,14 @@ pages.push(special({
   tool: { out: "mp4", aspect: "9:16", res: "1080", adv: "1" },
   body: `<p class="answer">TikTok için önerilen video boyutu 1080×1920 piksel ve 9:16 en-boy oranıdır. Yatay bir videoyu bu araçla ortadan kırparak dikey hale getirebilirsiniz. H.264 ve AAC içeren MP4 en uyumlu yükleme formatıdır.</p>
 ${socialSpec}
-<p>Süre ve dosya boyutu sınırları için TikTok'un güncel yardım sayfalarını kontrol edin.</p>
+<p>Süre ve dosya boyutu sınırları için TikTok'un güncel yardım sayfalarını kontrol edin. Uzun bir kaydın yalnızca bir bölümünü paylaşacaksanız önce <a href="../video-kesme/">video kesme aracıyla</a> kısaltın.</p>
 <h2>Nasıl kullanılır?</h2>${steps3("Video", "TikTok'a hazır MP4")}`,
   faq: [["Yatay videoyu kırpmadan TikTok'a koyabilir miyim?", "Evet, ancak ekranın üst ve alt kısmı boş kalır ve video küçük görünür. Konu merkezdeyse 9:16 kırpma daha iyi sonuç verir."]],
   related: ["instagram-video-boyutu/", "video-kirpma/", "video-kesme/", "video-sikistirma/"],
 }));
 
 pages.push({
-  lang: "tr", path: "video-boyutu-hesaplayici/", type: "page", calc: true, crumbs: [["Video araçları", "video-donusturucu/"]],
+  lang: "tr", path: "video-boyutu-hesaplayici/", type: "page", calc: true, crumbs: [["Video araçları", "araclar/"]],
   title: P("Video Boyutu Hesaplayıcı: Bit Hızı ve MB Hesaplama"),
   desc: "Video dosya boyutunu bit hızı ve süreden hesaplayın veya hedef MB için gereken bit hızını bulun. Ücretsiz video bitrate hesaplayıcı.",
   h1: "Video Boyutu ve Bit Hızı Hesaplayıcı", short: "Boyut hesaplayıcı", lead: "Bit hızı ve süreden dosya boyutunu tahmin edin ya da hedef boyut için gereken video bit hızını hesaplayın.",
@@ -492,23 +496,50 @@ pages.push({
   sources: S("x264"),
 });
 
+// ---------- hubs ----------
+const cardGrid = (items) => `<div class="cards">${items.map(([x, n, t]) => `<a class="card" href="../${x}"><b>${n}</b><span>${t}</span></a>`).join("")}</div>`;
+pages.push(page({
+  path: "araclar/", title: "Tüm Video Araçları: Dönüştür, Sıkıştır, Düzenle", h1: "Tüm Video Araçları", short: "Tüm araçlar",
+  desc: "Tarayıcıda çalışan tüm video araçları: format dönüştürme, sıkıştırma, kesme, kırpma, döndürme, ses çıkarma ve sosyal medya boyutları. Dosya yüklenmez.",
+  lead: "Ne yapmak istediğinizi seçin. Her araç aynı tarayıcı içi motoru kullanır ve dosyanızı yüklemez; sayfalar yalnızca o iş için uygun ayarlarla açılır.",
+  body: `<p class="answer">mp4donusturucu.com'daki tüm araçlar FFmpeg'in WebAssembly sürümüyle tarayıcınızda çalışır. Format dönüştürme için kaynak veya hedef formatın sayfasını, boyut sorunları için sıkıştırma araçlarını, görüntüyü değiştirmek için düzenleme araçlarını kullanın.</p>
+<h2>Videoyu MP4'e dönüştür</h2>${cardGrid(Object.entries(FMT).map(([k, F]) => [`${k}-mp4-donusturucu/`, `${F.n} → MP4`, F.use]))}
+<h2>MP4'ü başka formata dönüştür</h2>${cardGrid([...Object.entries(OUTF).map(([k, O]) => [`mp4-${k}-donusturucu/`, `MP4 → ${O.n}`, O.use]), ["gif-mp4-donusturucu/", "GIF → MP4", "Animasyonları küçük videoya çevirin"], ["video-donusturucu/", "Video dönüştürücü", "Tüm giriş ve çıkış formatları tek sayfada"]])}
+<h2>Sıkıştır ve küçült</h2>${cardGrid([["video-sikistirma/", "Video sıkıştırma", "Kalite, çözünürlük ve hedef MB ile küçültün"], ["mp4-sikistirma/", "MP4 sıkıştırma", "Telefon ve kamera MP4 kayıtlarını küçültün"], ["25-mb-video-kucultme/", "25 MB altına küçült", "E-posta ekleri için hedef boyut"], ["whatsapp-video-kucultme/", "WhatsApp için küçült", "720p, H.264 ve hedef boyut"], ["video-boyutu-hesaplayici/", "Boyut hesaplayıcı", "Bit hızı ve MB hesabı"]])}
+<h2>Düzenle</h2>${cardGrid([["video-kesme/", "Video kesme", "Belirli bir saniye aralığını alın"], ["video-kirpma/", "Video kırpma", "9:16, 1:1, 4:5 veya 16:9 oranına kırpın"], ["video-boyutlandirma/", "Video boyutlandırma", "Çözünürlüğü 1080p, 720p, 480p yapın"], ["video-dondurme/", "Video döndürme", "Yan veya ters videoları düzeltin"], ["h265-h264-donusturucu/", "HEVC → H.264", "Codec uyumluluk sorunlarını çözün"], ["iphone-video-mp4/", "iPhone video → MP4", "HEVC MOV kayıtlarını her yerde oynatın"]])}
+<h2>Ses</h2>${cardGrid([["video-mp3-donusturucu/", "Video → MP3", "Herhangi bir videonun sesini MP3 yapın"], ["video-ses-cikarma/", "Videodan ses çıkarma", "M4A, MP3, WAV veya OGG"], ["video-ses-kaldirma/", "Videodan ses kaldırma", "Sessiz video, arka plan döngüleri"]])}
+<h2>Sosyal medya ve GIF</h2>${cardGrid([["instagram-video-boyutu/", "Instagram video boyutu", "Reels ve gönderi ölçüleri"], ["tiktok-video-boyutu/", "TikTok video boyutu", "1080×1920, 9:16"], ["video-gif-donusturucu/", "Video → GIF", "Yüksek kaliteli GIF yapın"]])}`,
+  related: ["rehberler/", "nasil-calisir/"],
+}));
+pages.push(page({
+  path: "rehberler/", title: "Video Rehberleri: Formatlar, Codec'ler ve Sıkıştırma", h1: "Video Rehberleri", short: "Rehberler",
+  desc: "Video formatları, codec'ler, bit hızı, CRF ve sıkıştırma hakkında kısa ve kaynaklı rehberler. MP4, MKV, WebM, H.264 ve H.265 karşılaştırmaları.",
+  lead: "Doğru formatı ve ayarı seçmek için ihtiyaç duyduğunuz temel bilgiler. Her rehber kısa bir cevapla başlar ve teknik kaynaklarını belirtir.",
+  body: `<p class="answer">Bu rehberler, video dönüştürürken en sık sorulan soruları yanıtlar: hangi format, hangi codec, hangi kalite ayarı ve dosya boyutu nasıl hesaplanır. Bilgiler FFmpeg belgelerine ve MDN Web Docs'a dayanır.</p>
+<h2>Formatlar</h2>${cardGrid([["formatlar/", "Video formatları rehberi", "MP4, MOV, MKV, AVI, WebM ve diğerlerinin karşılaştırması"], ["mp4-nedir/", "MP4 nedir?", "Yapısı, codec'leri ve kullanım alanları"], ["mkv-nedir/", "MKV nedir?", "Matroska'nın avantajları ve açılışı"], ["webm-mi-mp4-mu/", "WebM mi MP4 mü?", "Profilinize göre net öneri"]])}
+<h2>Codec'ler</h2>${cardGrid([["codec/", "Video codec rehberi", "H.264, H.265, VP9 ve AV1"], ["h264-h265-farki/", "H.264 ve H.265 farkı", "Verimlilik ve uyumluluk"], ["en-iyi-mp4-codec/", "En iyi MP4 codec", "Senaryolara göre seçim"]])}
+<h2>Kalite ve boyut</h2>${cardGrid([["video-bitrate-nedir/", "Bit hızı nedir?", "CBR, VBR ve CRF farkı"], ["crf-nedir/", "CRF nedir?", "x264 ve x265 için doğru değer"], ["kalite-kaybetmeden-video-kucultme/", "Kaliteyi koruyarak küçültme", "Gözle görülmeyen kayıpla küçültme yolları"], ["video-sikistirma-rehberi/", "Video sıkıştırma rehberi", "Teknikler ve gerçekçi beklentiler"]])}
+<h2>Site hakkında</h2>${cardGrid([["nasil-calisir/", "Nasıl çalışır?", "Tarayıcıda dönüştürmenin teknik açıklaması"], ["metodoloji/", "Metodoloji", "Ayarların dayanağı ve yapılan testler"]])}`,
+  related: ["araclar/", "video-boyutu-hesaplayici/"],
+}));
+
 // ---------- guides ----------
 pages.push(guide({
-  path: "formatlar/", crumbs: [], title: "Video Formatları Rehberi: MP4, MOV, MKV, AVI, WebM",
+  path: "formatlar/", title: "Video Formatları Rehberi: MP4, MOV, MKV, AVI, WebM",
   desc: "Video formatları karşılaştırması: MP4, MOV, MKV, AVI, WebM, 3GP, TS, FLV, OGV. Hangi format nerede oynar, hangi codec'leri taşır?",
   h1: "Video Formatları Rehberi", short: "Video formatları",
   body: `<p class="answer">Video formatı (kapsayıcı), video, ses ve altyazı parçalarını tek dosyada bir arada tutan yapıdır. En yaygın formatlar MP4, MOV, MKV, AVI ve WebM'dir. Uyumluluk için en güvenli seçim H.264 video ve AAC ses içeren MP4'tür.</p>
 <h2>Kapsayıcı ve codec farkı</h2><p>Dosya uzantısı (.mp4, .mkv) kapsayıcıyı gösterir; içindeki görüntünün nasıl sıkıştırıldığını ise codec belirler. Aynı MP4 dosyası H.264 veya HEVC içerebilir ve bir cihaz MP4'ü desteklese bile HEVC'yi çözemeyebilir. Codec'ler için <a href="../codec/">codec rehberine</a> bakın.</p>
 <h2>Format karşılaştırma tablosu</h2>
 ${h.table(["Format", "Geliştiren", "Yaygın codec'ler", "Tarayıcı", "Dönüştür"], [...Object.entries(FMT).map(([k, F]) => [`<strong>${F.n}</strong> <code>${F.ext}</code>`, F.dev, F.codecs, F.web, `<a href="../${k}-mp4-donusturucu/">${F.n} → MP4</a>`]), ["<strong>MP4</strong> <code>.mp4</code>", CMP_MP4.dev, CMP_MP4.codecs, CMP_MP4.web, '<a href="../mp4-webm-donusturucu/">MP4 → WebM</a>']])}
-<h2>Hangi formatı seçmeliyim?</h2>${h.ul(["<strong>Paylaşım, telefon, TV, sosyal medya:</strong> MP4 (H.264 + AAC).", "<strong>Web sitesi:</strong> WebM (VP9) + yedek MP4.", "<strong>Arşiv, çok dilli ses, altyazı:</strong> MKV.", "<strong>Apple kurgu iş akışı:</strong> MOV veya MP4.", "<strong>Eski cihazlar:</strong> AVI (Xvid)."])}
+<h2>Hangi formatı seçmeliyim?</h2>${h.ul(["<strong>Paylaşım, telefon, TV, sosyal medya:</strong> MP4 (H.264 + AAC).", "<strong>Web sitesi:</strong> WebM (VP9) + yedek MP4.", "<strong>Arşiv, çok dilli ses, altyazı:</strong> MKV.", "<strong>Apple kurgu iş akışı:</strong> MOV veya MP4.", "<strong>Eski cihazlar:</strong> AVI (Xvid)."])}<p>Seçtiğiniz formata dönüştürmek için <a href="../video-donusturucu/">video dönüştürücüyü</a> kullanabilirsiniz; tüm çıkış formatları tek sayfadadır.</p>
 <h2>Metodoloji</h2><p>Bu tablodaki bilgiler FFmpeg ve MDN belgelerine dayanır. Tarayıcı desteği sürümlere göre değişebilir; "codec'e bağlı" ifadesi, kapsayıcının değil içindeki codec'in belirleyici olduğu durumları gösterir.</p>`,
   related: ["codec/", "mp4-nedir/", "mkv-nedir/", "webm-mi-mp4-mu/", "video-donusturucu/"],
   sources: S("ffFormats", "mdnFormats", "ffGeneral"),
 }));
 
 pages.push(guide({
-  path: "codec/", crumbs: [], title: "Video Codec Rehberi: H.264, H.265, VP9, AV1 Karşılaştırması",
+  path: "codec/", title: "Video Codec Rehberi: H.264, H.265, VP9 ve AV1",
   desc: "Video codec nedir? H.264, H.265 (HEVC), VP9 ve AV1 karşılaştırması: verimlilik, uyumluluk, lisans ve kullanım alanları.",
   h1: "Video Codec Rehberi", short: "Codec rehberi",
   body: `<p class="answer">Video codec, görüntüyü sıkıştıran ve açan algoritmadır. Bugün en yaygın dört codec H.264 (AVC), H.265 (HEVC), VP9 ve AV1'dir. H.264 en uyumlusudur; HEVC, VP9 ve AV1 aynı kalitede daha küçük dosya üretir ancak destekleri daha sınırlıdır.</p>
@@ -516,7 +547,8 @@ pages.push(guide({
 ${h.table(["Codec", "Yayın", "Verimlilik (H.264'e göre)", "Uyumluluk", "Lisans"], [["H.264 / AVC", "2003", "Referans", "Neredeyse evrensel", "Patentli (MPEG LA havuzu)"], ["H.265 / HEVC", "2013", "Aynı kalitede belirgin şekilde daha küçük", "Yeni cihazlar; tarayıcı desteği değişken", "Patentli, birden fazla havuz"], ["VP9", "2013", "HEVC'ye yakın", "Chrome, Firefox, Edge, Android; YouTube", "Telifsiz (Google)"], ["AV1", "2018", "En verimli", "Yeni tarayıcılar ve cihazlar; donanım desteği artıyor", "Telifsiz (AOMedia)"]])}
 <p>Verimlilik farkları içeriğe ve kodlayıcı ayarlarına göre değişir; kesin yüzdeler yerine göreli sıralama verilmiştir.</p>
 <h2>Ses codec'leri</h2>${h.table(["Codec", "Kullanım"], [["AAC", "MP4 ve MOV içinde standart; neredeyse evrensel"], ["MP3", "En eski ve en yaygın kayıplı ses"], ["Opus", "WebM, düşük gecikmeli iletişim; çok verimli"], ["Vorbis", "Ogg / WebM, eski açık codec"], ["PCM", "Sıkıştırılmamış; WAV ve profesyonel MOV"]])}
-<h2>Bu sitede hangi codec'ler var?</h2><p>Tarayıcı motorumuz (ffmpeg.wasm) H.264 (x264), H.265 (x265), VP9 (libvpx), MPEG-4 Part 2, AAC, MP3 (LAME), Opus ve Vorbis kodlayabilir. AV1 kodlama ve AV1 çözme bu sürümde mevcut değildir.</p>`,
+<h2>Bu sitede hangi codec'ler var?</h2><p>Tarayıcı motorumuz (ffmpeg.wasm) H.264 (x264), H.265 (x265), VP9 (libvpx), MPEG-4 Part 2, AAC, MP3 (LAME), Opus ve Vorbis kodlayabilir. AV1 kodlama ve AV1 çözme bu sürümde mevcut değildir.</p>
+<h2>Hangi codec'i seçmeliyim?</h2><p>Kısa cevap: uyumluluk için H.264, depolama için H.265, web için VP9 veya AV1. Senaryolara göre öneriler <a href="../en-iyi-mp4-codec/">en iyi MP4 codec</a> rehberinde, iki yaygın codec'in ayrıntılı karşılaştırması <a href="../h264-h265-farki/">H.264 ve H.265 farkı</a> sayfasındadır.</p>`,
   related: ["h264-h265-farki/", "en-iyi-mp4-codec/", "formatlar/", "crf-nedir/"],
   sources: S("ffCodecs", "mdnCodecs", "x264", "x265", "vp9"),
 }));
@@ -529,7 +561,7 @@ pages.push(guide({
 <h2>MP4 nasıl çalışır?</h2><p>MP4, Apple'ın QuickTime dosya yapısını temel alan ISO temel medya dosya formatından türemiştir. Dosya "box" (atom) adı verilen bölümlerden oluşur: <code>ftyp</code> dosya türünü, <code>moov</code> zaman çizelgesi ve parça bilgilerini, <code>mdat</code> ise asıl ses ve görüntü verisini içerir. <code>moov</code> bölümü dosyanın başına taşındığında (faststart) video, tamamı indirilmeden oynamaya başlar; bu sitedeki MP4 çıktıları bu şekilde hazırlanır.</p>
 <h2>MP4 içinde hangi codec'ler olabilir?</h2>${h.table(["Tür", "Yaygın", "Diğer"], [["Video", "H.264 (AVC)", "H.265 (HEVC), AV1, MPEG-4 Part 2"], ["Ses", "AAC", "MP3, AC-3, Opus"], ["Altyazı", "mov_text", "-"]])}
 <h2>MP4, MOV ve MKV farkı</h2>${h.table(["", "MP4", "MOV", "MKV"], [["Standart", "ISO", "Apple", "Açık (Matroska)"], ["Uyumluluk", "En geniş", "Apple odaklı", "Masaüstü oynatıcılar"], ["Çoklu ses / altyazı", "Sınırlı", "Sınırlı", "Güçlü"], ["Tarayıcı", "Evet", "Codec'e bağlı", "Resmî değil"]])}
-<h2>MP4 ne zaman kullanılmalı?</h2><p>Bir videonun "her yerde oynaması" gerekiyorsa MP4 (H.264 + AAC) doğru seçimdir: sosyal medya, mesajlaşma, web siteleri, sunumlar, akıllı TV'ler. Çok dilli ses veya altyazı arşivlemek için MKV daha esnektir.</p>`,
+<h2>MP4 ne zaman kullanılmalı?</h2><p>Bir videonun "her yerde oynaması" gerekiyorsa MP4 (H.264 + AAC) doğru seçimdir: sosyal medya, mesajlaşma, web siteleri, sunumlar, akıllı TV'ler. Çok dilli ses veya altyazı arşivlemek için <a href="../mkv-nedir/">MKV</a> daha esnektir. MP4 içinde hangi codec'in kullanılacağı için <a href="../en-iyi-mp4-codec/">en iyi MP4 codec</a> rehberine bakın.</p>`,
   related: ["", "formatlar/", "en-iyi-mp4-codec/", "webm-mi-mp4-mu/"],
   sources: S("ffFormats", "mdnFormats"),
 }));
@@ -540,7 +572,7 @@ pages.push(guide({
   h1: "H.264 ve H.265 Farkı", short: "H.264 vs H.265",
   body: `<p class="answer">H.265 (HEVC), H.264'ün halefidir ve aynı görsel kaliteyi genellikle belirgin şekilde daha düşük bit hızıyla sağlar. Ancak H.264 neredeyse her cihazda ve tarayıcıda oynarken HEVC desteği platforma ve donanıma bağlıdır. Uyumluluk önemliyse H.264, depolama önemliyse H.265 seçin.</p>
 <h2>Karşılaştırma</h2>${h.table(["Özellik", "H.264 / AVC", "H.265 / HEVC"], [["Standart yılı", "2003", "2013"], ["Sıkıştırma verimliliği", "Referans", "Aynı kalitede daha küçük dosya"], ["Kodlama hızı", "Hızlı", "Daha yavaş (özellikle tarayıcıda)"], ["Donanım çözme", "Neredeyse her cihaz", "Yeni cihazlar"], ["Tarayıcı desteği", "Evrensel", "İşletim sistemi ve donanıma bağlı"], ["Maksimum çözünürlük", "4K'ya kadar yaygın", "8K'ya kadar"], ["Bu sitedeki CRF (Dengeli)", "24", "28"]])}
-<h2>Ne zaman H.264?</h2>${h.ul(["Videoyu bilinmeyen cihazlarda paylaşacaksanız", "Web sitesi, LMS, PowerPoint, eski TV", "Hızlı kodlama gerekiyorsa"])}
+<h2>Ne zaman H.264?</h2>${h.ul(["Videoyu bilinmeyen cihazlarda paylaşacaksanız", "Web sitesi, LMS, PowerPoint, eski TV", "Hızlı kodlama gerekiyorsa"])}<p>Elinizdeki HEVC videoyu <a href="../h265-h264-donusturucu/">H.265'ten H.264'e dönüştürebilirsiniz</a>.</p>
 <h2>Ne zaman H.265?</h2>${h.ul(["Arşiv ve yedekleme (depolama tasarrufu)", "Yeni iPhone, Mac ve Android cihazlar arasında paylaşım", "4K içerik"])}
 <h2>CRF değerleri neden farklı?</h2><p>x264 ve x265 kodlayıcılarının CRF ölçekleri birebir aynı değildir. FFmpeg belgeleri, x265 için varsayılan CRF'nin 28 olduğunu ve x264 CRF 23 ile yaklaşık benzer kaliteye denk geldiğini belirtir. Bu yüzden araç H.265 seçildiğinde CRF'yi 4 puan artırır.</p>`,
   related: ["h265-h264-donusturucu/", "codec/", "crf-nedir/", "en-iyi-mp4-codec/"],
@@ -577,13 +609,13 @@ pages.push(guide({
   h1: "En İyi MP4 Codec Hangisi?", short: "En iyi MP4 codec",
   body: `<p class="answer">Çoğu kullanıcı için en iyi MP4 codec'i H.264'tür, çünkü neredeyse her cihazda ve tarayıcıda oynar. Daha küçük dosya ve yeni cihazlar için H.265 (HEVC), web'de en yüksek verimlilik için AV1 öne çıkar. Ses için standart seçim AAC'dir.</p>
 ${h.table(["Senaryo", "Video codec", "Ses codec"], [["Genel paylaşım", "H.264", "AAC 128-192 kbps"], ["Arşiv / depolama", "H.265", "AAC 192 kbps"], ["Web, büyük ölçek", "AV1 + H.264 yedek", "Opus / AAC"], ["Eski TV ve oynatıcılar", "H.264 (High profil, 1080p)", "AAC"]])}
-<h2>Profil ve seviye</h2><p>H.264'ün profilleri (Baseline, Main, High) hangi sıkıştırma özelliklerinin kullanılacağını belirler. Modern cihazların tamamı High profili destekler. Bu sitedeki çıktılar, geniş uyumluluk için <code>yuv420p</code> piksel formatıyla üretilir; 10 bit veya 4:2:2 kaynaklar 8 bit 4:2:0'a dönüştürülür.</p>`,
+<h2>Profil ve seviye</h2><p>H.264'ün profilleri (Baseline, Main, High) hangi sıkıştırma özelliklerinin kullanılacağını belirler. Günümüzdeki telefon, bilgisayar ve TV'lerin büyük çoğunluğu High profili destekler. Bu sitedeki çıktılar, geniş uyumluluk için <code>yuv420p</code> piksel formatıyla üretilir; 10 bit veya 4:2:2 kaynaklar 8 bit 4:2:0'a dönüştürülür.</p>`,
   related: ["codec/", "h264-h265-farki/", "mp4-nedir/", ""],
   sources: S("x264", "mdnCodecs"),
 }));
 
 pages.push(guide({
-  path: "video-bitrate-nedir/", title: "Video Bitrate (Bit Hızı) Nedir? Doğru Değer Nasıl Seçilir?",
+  path: "video-bitrate-nedir/", title: "Video Bitrate (Bit Hızı) Nedir? Doğru Değer Seçimi",
   desc: "Bit hızı nedir, kaliteyi ve dosya boyutunu nasıl etkiler? CBR, VBR ve CRF farkı, çözünürlüğe göre önerilen bit hızları.",
   h1: "Video Bit Hızı (Bitrate) Nedir?", short: "Bitrate nedir?",
   body: `<p class="answer">Bit hızı (bitrate), videonun bir saniyesi için kullanılan veri miktarıdır ve genellikle kbps veya Mbps ile ölçülür. Yüksek bit hızı daha fazla ayrıntı ve daha büyük dosya demektir. Dosya boyutu yaklaşık olarak bit hızı × süre ÷ 8 ile hesaplanır.</p>
@@ -600,7 +632,9 @@ pages.push(guide({
   h1: "CRF (Constant Rate Factor) Nedir?", short: "CRF nedir?",
   body: `<p class="answer">CRF (Constant Rate Factor), x264 ve x265 kodlayıcılarında hedef bit hızı yerine hedef kalite belirleyen moddur. Düşük CRF daha yüksek kalite ve daha büyük dosya, yüksek CRF daha küçük dosya demektir. x264'te ölçek 0-51 arasıdır ve varsayılan 23'tür; FFmpeg belgeleri 17-28 aralığını makul kabul eder.</p>
 <h2>Bu sitedeki değerler</h2>${h.table(["Kalite ayarı", "H.264 CRF", "H.265 CRF", "VP9 CRF"], [["Yüksek", "20", "24", "30"], ["Dengeli", "24", "28", "34"], ["Küçük dosya", "29", "33", "40"]])}
-<h2>Kurallar</h2>${h.ul(["CRF'yi 6 artırmak x264'te bit hızını kabaca yarıya indirir (FFmpeg H.264 rehberi).", "CRF dosya boyutunu garanti etmez; belirli bir MB gerekiyorsa hedef boyut kullanın.", "Preset (veryfast, medium, slow) aynı CRF'de boyutu etkiler; bu site tarayıcıda hız için veryfast kullanır."])}`,
+<h2>Kurallar</h2>${h.ul(["CRF'yi 6 artırmak x264'te bit hızını kabaca yarıya indirir (FFmpeg H.264 rehberi).", "CRF dosya boyutunu garanti etmez; belirli bir MB gerekiyorsa hedef boyut kullanın.", "Preset (veryfast, medium, slow) aynı CRF'de boyutu etkiler; bu site tarayıcıda hız için veryfast kullanır."])}
+<h2>CRF mi, hedef boyut mu?</h2>${h.table(["Durum", "Önerilen mod", "Neden"], [["Arşiv, kalite öncelikli", "CRF", "Her sahneye gereken kadar veri harcanır"], ["E-posta veya platform boyut sınırı", "Hedef boyut (ortalama bit hızı)", "Sonuç belirli bir MB değerine yaklaşır"], ["Çok farklı uzunlukta birçok video", "CRF", "Tüm videolarda tutarlı kalite"]])}
+<p>Örnek: Aynı 2 dakikalık 1080p video CRF 24 ile basit bir konuşma sahnesinde birkaç MB, hızlı hareketli bir spor sahnesinde onlarca MB tutabilir. Boyut önemliyse <a href="../video-boyutu-hesaplayici/">video boyutu hesaplayıcı</a> ile hedef bit hızını hesaplayın.</p>`,
   related: ["video-bitrate-nedir/", "h264-h265-farki/", "video-sikistirma/", "kalite-kaybetmeden-video-kucultme/"],
   sources: S("x264", "x265", "vp9"),
 }));
@@ -610,7 +644,9 @@ pages.push(guide({
   desc: "MKV (Matroska) nedir, neden kullanılır, hangi programlar açar? MKV'yi MP4'e dönüştürmek ne zaman gerekir?",
   h1: "MKV Nedir?", short: "MKV nedir?",
   body: `<p class="answer">MKV (Matroska Video), birden fazla video, ses ve altyazı parçasını tek dosyada taşıyabilen açık ve ücretsiz bir kapsayıcı formattır. Arşivleme ve çok dilli içerik için idealdir; VLC ve mpv gibi oynatıcılar açar, ancak telefonlar, iPhone ve birçok TV doğrudan desteklemeyebilir.</p>
-<h2>MKV'nin avantajları</h2>${h.ul(["Sınırsız sayıda ses ve altyazı parçası", "Bölüm (chapter) desteği", "Neredeyse her codec'i taşıyabilme", "Açık standart, lisans ücreti yok", "Kayıt kesilse bile dosyanın büyük kısmı kurtarılabilir (OBS bu yüzden MKV önerir)"])}
+<h2>MKV'nin avantajları</h2>${h.ul(["Tek dosyada birden fazla ses ve altyazı parçası", "Bölüm (chapter) desteği", "Neredeyse her codec'i taşıyabilme", "Açık standart, lisans ücreti yok", "Kayıt beklenmedik şekilde kesilse bile o ana kadar kaydedilen kısım genellikle oynatılabilir; OBS bu yüzden MKV ile kaydetmeyi önerir"])}
+<h2>MKV dosyası nasıl açılır?</h2><p>VLC ve mpv gibi ücretsiz oynatıcılar MKV dosyalarını doğrudan açar. Dosyayı telefonda, akıllı TV'de, sunumda veya kurgu programında kullanmanız gerekiyorsa MP4'e dönüştürmek en güvenli yoldur.</p>
+<h2>OBS kayıtları için not</h2><p>OBS Studio, MKV kayıtlarını yeniden kodlamadan MP4'e aktaran Dosya menüsünde "Remux Recordings" (kayıtları yeniden paketleme) özelliğine sahiptir; bu yöntem kalite kaybı olmadan ve çok hızlı çalışır. Kaydı küçültmek veya çözünürlüğünü değiştirmek istiyorsanız tarayıcıdaki dönüştürücü yeniden kodlama yapar.</p>
 <h2>MKV'yi MP4'e ne zaman dönüştürmeli?</h2><p>Videoyu iPhone'da oynatmak, kurgu programına aktarmak, sosyal medyada paylaşmak veya web'e yüklemek istiyorsanız. <a href="../mkv-mp4-donusturucu/">MKV → MP4 dönüştürücü</a> bunu tarayıcınızda yapar.</p>`,
   related: ["mkv-mp4-donusturucu/", "formatlar/", "mp4-nedir/", "codec/"],
   sources: S("ffFormats", "mdnFormats"),
@@ -655,7 +691,9 @@ pages.push(page({
   desc: "Dönüştürme ayarlarımızı ve rehberlerdeki teknik bilgileri nasıl belirlediğimiz, hangi kaynakları kullandığımız ve nasıl test ettiğimiz.",
   body: `<p class="answer">Araçlardaki varsayılan ayarlar ve rehberlerdeki teknik bilgiler FFmpeg'in resmî belgelerine, FFmpeg wiki kodlama rehberlerine ve MDN Web Docs'a dayanır. Kesin olmayan veya platforma göre değişen bilgileri (ör. sosyal medya sınırları) açıkça belirtir ve resmî kaynağa yönlendiririz.</p>
 <h2>Ayarların kaynağı</h2>${h.table(["Ayar", "Değer", "Dayanak"], [["H.264 Dengeli", "CRF 24, preset veryfast", "FFmpeg H.264 rehberi: CRF 17-28 makul aralık, varsayılan 23"], ["H.265 Dengeli", "CRF 28", "FFmpeg H.265 rehberi: varsayılan 28"], ["VP9 Dengeli", "CRF 34, b:v 0", "FFmpeg VP9 rehberi: sabit kalite modu"], ["Piksel formatı", "yuv420p", "Geniş oynatıcı uyumluluğu"], ["MP4 faststart", "Açık", "Web'de anında oynatma"], ["Hedef boyut payı", "%6", "Kapsayıcı ek yükü ve bit hızı dalgalanması"]])}
-<h2>Test süreci</h2>${h.ul(["Her çıktı formatı için örnek dosyalarla dönüştürme ve oynatma kontrolü.", "Güncel Chrome, Edge, Firefox ve Safari tarayıcılarında arayüz testi.", "Tahmini boyutun gerçek çıktıyla karşılaştırılması; tahminler yaklaşık değer olarak sunulur."])}
+<h2>Yapılan testler</h2><p>Aşağıdaki testler yayındaki sitede, Windows üzerinde güncel Chrome ile 28 Ekim 2026'da yapılmıştır. Kaynak dosya, MDN'nin CC0 lisanslı örnek videosudur (5 saniye, 960×540, VP8 video + Vorbis ses, WebM, 0,53 MB).</p>
+${h.table(["Çıktı", "Ayar", "Sonuç boyutu", "Süre"], [["MP4 (H.264 + AAC)", "Dengeli, orijinal çözünürlük", "0,27 MB (-%49)", "47,0 sn"], ["MP3", "Dengeli (192 kbps)", "0,12 MB", "0,8 sn"], ["GIF", "360 px, 12 FPS", "1,22 MB (+%130)", "9,4 sn"]])}
+<p>Süreler motor yüklendikten sonraki kodlama süresidir ve cihaza göre değişir. Diğer çıktı formatları (WebM, MOV, MKV, AVI, M4A, WAV, OGG) ile Edge, Firefox ve Safari tarayıcıları henüz bu şekilde belgelenmiş bir testten geçmemiştir; testler tamamlandıkça bu tablo güncellenecektir. Tahmini çıktı boyutu yaklaşık bir değerdir ve gerçek boyuttan farklı olabilir.</p>
 <h2>Düzeltme politikası</h2><p>Bir hata fark ederseniz <a href="../iletisim/">iletişim</a> sayfasından bildirin. Doğrulanan düzeltmeleri ilgili sayfada güncelleme tarihiyle yayımlarız.</p>`,
   sources: S("x264", "x265", "vp9", "mdnFormats"),
 }));

@@ -10,6 +10,34 @@ if (tool) initTool(tool);
 const calc = $("#calc");
 if (calc) initCalc(calc);
 initEbru();
+initMenu();
+
+function initMenu() {
+  const nav = $("#nav-main"), burger = $(".menu-t");
+  if (!nav) return;
+  const closeSubs = (except) => $$(".mi.open", nav).forEach((li) => { if (li !== except) { li.classList.remove("open"); $(".sub-t", li).setAttribute("aria-expanded", "false"); } });
+  $$(".sub-t", nav).forEach((btn) => btn.addEventListener("click", () => {
+    const li = btn.closest(".mi"), open = !li.classList.contains("open");
+    closeSubs(li);
+    li.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    if (open) $(".sub a", li)?.focus();
+  }));
+  const setBurger = (open) => {
+    burger.setAttribute("aria-expanded", String(open));
+    nav.classList.toggle("open", open);
+    document.body.classList.toggle("nav-open", open);
+  };
+  burger?.addEventListener("click", () => setBurger(burger.getAttribute("aria-expanded") !== "true"));
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const li = $(".mi.open", nav);
+    if (li) { closeSubs(); $(".sub-t", li).focus(); }
+    else if (nav.classList.contains("open")) { setBurger(false); burger.focus(); }
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".mi")) closeSubs(); });
+  matchMedia("(min-width: 861px)").addEventListener("change", (m) => { if (m.matches) setBurger(false); });
+}
 
 function initTool(root) {
   const L = JSON.parse($("#i18n").textContent);

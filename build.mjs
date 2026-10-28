@@ -145,6 +145,16 @@ function langSwitch(p) {
   }).join("")}</nav>`;
 }
 
+function navMenu(p, u) {
+  const items = u.nav.map(([n, x, subs], i) => {
+    const id = `sm-${i}`;
+    const cur = x === p.path || (subs || []).includes(p.path);
+    const links = (subs || []).filter((s) => byPath.has(s)).map((s) => `<li><a href="${href(s)}"${s === p.path ? ' aria-current="page"' : ""}>${byPath.get(s).short || strip(byPath.get(s).h1)}</a></li>`).join("");
+    return `<li class="mi${cur ? " is-current" : ""}"><a class="mi-a" href="${href(x)}">${n}</a><button class="sub-t" type="button" aria-expanded="false" aria-controls="${id}" aria-label="${esc(n)} ${u.subLabel}"><span aria-hidden="true"></span></button><ul class="sub" id="${id}">${links}</ul></li>`;
+  }).join("");
+  return `<button class="menu-t" type="button" aria-expanded="false" aria-controls="nav-main">${u.menu}<span aria-hidden="true"></span></button><nav class="nav" id="nav-main" aria-label="${u.navLabel}"><ul class="menu">${items}</ul></nav>`;
+}
+
 function layout(p) {
   const u = UI[p.lang];
   const crumbs = !p.home
@@ -190,7 +200,7 @@ ${schema(p, u)}
 <a class="skip" href="#main">${u.skip}</a>
 <header class="top"><div class="wrap">
 <a class="logo" href="${href(u.homePath)}">${LOGO}<span class="wm">mp4<b>donusturucu</b></span></a>
-<nav class="nav" aria-label="${u.navLabel}">${u.nav.map(([n, x], i) => `<a href="${href(x)}"${i > 0 ? ' class="hide-m"' : ""}>${n}</a>`).join("")}</nav>
+${navMenu(p, u)}
 ${langSwitch(p)}
 </div></header>
 <main id="main" class="wrap">

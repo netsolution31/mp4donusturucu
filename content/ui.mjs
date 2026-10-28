@@ -88,9 +88,9 @@ export const UI = {
     footerText: "Tarayıcı tabanlı, gizlilik öncelikli video dönüştürme ve sıkıştırma araçları.",
     footerLegal: "Yalnızca sahibi olduğunuz veya kullanım izniniz bulunan dosyaları dönüştürün.",
     footer: [
-      ["Dönüştürücüler", ["mov-mp4-donusturucu/", "mkv-mp4-donusturucu/", "avi-mp4-donusturucu/", "webm-mp4-donusturucu/", "mp4-mp3-donusturucu/", "mp4-gif-donusturucu/", "mp4-webm-donusturucu/"]],
-      ["Araçlar ve rehberler", ["araclar/", "video-sikistirma/", "video-kesme/", "video-kirpma/", "video-boyutu-hesaplayici/", "rehberler/", "formatlar/", "codec/"]],
-      ["Kurumsal", ["hakkimizda/", "nasil-calisir/", "metodoloji/", "guvenlik/", "gizlilik/", "cerezler/", "kvkk-aydinlatma-metni/", "kullanim-sartlari/", "telif-hakki/", "iletisim/"]],
+      ["Diğer dönüştürücüler", ["3gp-mp4-donusturucu/", "m4v-mp4-donusturucu/", "mpeg-mp4-donusturucu/", "ts-mp4-donusturucu/", "flv-mp4-donusturucu/", "ogv-mp4-donusturucu/", "mp4-webm-donusturucu/", "mp4-mov-donusturucu/", "mp4-avi-donusturucu/", "mp4-wav-donusturucu/", "mp4-gif-donusturucu/", "gif-mp4-donusturucu/"]],
+      ["Ses, codec ve platform", ["video-mp3-donusturucu/", "video-ses-cikarma/", "h265-h264-donusturucu/", "instagram-video-boyutu/", "tiktok-video-boyutu/", "kalite-kaybetmeden-video-kucultme/", "en-iyi-mp4-codec/", "video-bitrate-nedir/"]],
+      ["Yasal", ["gizlilik/", "cerezler/", "kvkk-aydinlatma-metni/", "kullanim-sartlari/", "telif-hakki/", "iletisim/"]],
     ],
   },
   en: {

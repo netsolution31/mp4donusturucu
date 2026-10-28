@@ -16,7 +16,7 @@ export default [
   tool({
     path: "en/", key: "home", crumbs: undefined, home: true, title: "MP4 Converter: Free In-Browser Video Converter, No Upload",
     desc: "Free MP4 converter that runs in your browser. Convert MOV, MKV, AVI, WebM and more to MP4, GIF or MP3. No upload, no watermark, no sign-up.",
-    h1: "MP4 Converter", short: "MP4 converter",
+    h1: "MP4 Converter", short: "MP4 converter", tagline: "Drop your video in. <em>We transform it.</em>",
     lead: "Convert video in your browser. Your file stays on your device. Turn MOV, MKV, AVI, WebM, 3GP and more into MP4, WebM, GIF or MP3.",
     tool: { out: "mp4" },
     body: `<p class="answer">An MP4 converter re-packages and, when needed, re-encodes a video into the MP4 container. mp4donusturucu.com does this on your device in supported browsers: the file is never uploaded and can be encoded with H.264, H.265 or VP9 depending on your target.</p>

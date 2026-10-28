@@ -19,6 +19,7 @@ export const SRC = {
 };
 
 const trJS = {
+  before: "Önce", after: "Sonra", compare: "Önce / sonra karşılaştırması", none: "yok", crush: "Sıkıştırılıyor", ready: "Dosya bekleniyor", loaded: "Dönüştürmeye hazır", estShort: "tahmini", containers: { mov: "QuickTime MOV", mp4: "MPEG-4 MP4", m4v: "Apple M4V", mkv: "Matroska MKV", webm: "WebM", avi: "AVI", "3gp": "3GPP", ts: "MPEG-TS", mts: "AVCHD MTS", m2ts: "AVCHD M2TS", flv: "Flash FLV", ogv: "Ogg OGV", mpg: "MPEG-PS", mpeg: "MPEG-PS", vob: "DVD VOB", gif: "GIF" },
   loading: "Motor yükleniyor (ilk kullanımda yaklaşık 31 MB)...",
   converting: "Dönüştürülüyor",
   done: "Hazır.",
@@ -34,6 +35,7 @@ const trJS = {
   codecs: { h264: "H.264 (en uyumlu)", h265: "H.265 / HEVC (daha küçük)", vp9: "VP9", mpeg4: "MPEG-4 Part 2 (Xvid)", auto: "Otomatik" },
 };
 const enJS = {
+  before: "Before", after: "After", compare: "Before / after comparison", none: "none", crush: "Compressing", ready: "Waiting for a file", loaded: "Ready to convert", estShort: "estimated", containers: { mov: "QuickTime MOV", mp4: "MPEG-4 MP4", m4v: "Apple M4V", mkv: "Matroska MKV", webm: "WebM", avi: "AVI", "3gp": "3GPP", ts: "MPEG-TS", mts: "AVCHD MTS", m2ts: "AVCHD M2TS", flv: "Flash FLV", ogv: "Ogg OGV", mpg: "MPEG-PS", mpeg: "MPEG-PS", vob: "DVD VOB", gif: "GIF" },
   loading: "Loading engine (about 31 MB on first use)...",
   converting: "Converting",
   done: "Done.",
@@ -49,6 +51,7 @@ const enJS = {
   codecs: { h264: "H.264 (most compatible)", h265: "H.265 / HEVC (smaller)", vp9: "VP9", mpeg4: "MPEG-4 Part 2 (Xvid)", auto: "Auto" },
 };
 const frJS = {
+  before: "Avant", after: "Après", compare: "Comparaison avant / après", none: "aucun", crush: "Compression", ready: "En attente d'un fichier", loaded: "Prêt à convertir", estShort: "estimé", containers: { mov: "QuickTime MOV", mp4: "MPEG-4 MP4", m4v: "Apple M4V", mkv: "Matroska MKV", webm: "WebM", avi: "AVI", "3gp": "3GPP", ts: "MPEG-TS", mts: "AVCHD MTS", m2ts: "AVCHD M2TS", flv: "Flash FLV", ogv: "Ogg OGV", mpg: "MPEG-PS", mpeg: "MPEG-PS", vob: "DVD VOB", gif: "GIF" },
   loading: "Chargement du moteur (environ 31 Mo à la première utilisation)...",
   converting: "Conversion",
   done: "Terminé.",
@@ -66,11 +69,11 @@ const frJS = {
 
 export const UI = {
   tr: {
-    homePath: "", home: "Ana sayfa", howPath: "nasil-calisir/", howLabel: "Nasıl çalıştığını ve kendiniz nasıl doğrulayabileceğinizi okuyun.", locale: "tr_TR", skip: "İçeriğe geç", navLabel: "Ana menü",
+    homePath: "", tele: [["Yükleme", "Yok"], ["İşlem", "Tarayıcıda"], ["Depolama", "Yok"], ["Motor", "FFmpeg / WASM"]], privTag: "Gizlilik", answerL: "Kısa cevap", footBig: "Dönüştür.", home: "Ana sayfa", howPath: "nasil-calisir/", howLabel: "Nasıl çalıştığını ve kendiniz nasıl doğrulayabileceğinizi okuyun.", locale: "tr_TR", skip: "İçeriğe geç", navLabel: "Ana menü",
     nav: [["Tüm araçlar", "araclar/"], ["Sıkıştır", "video-sikistirma/"], ["Rehberler", "rehberler/"], ["Nasıl çalışır", "nasil-calisir/"]],
     shield: ["Dosya yüklenmez", "Tarayıcıda işlenir", "Sunucuda saklanmaz"],
     tool: {
-      pick: "Video dosyası seç", drop: "Videonuzu buraya bırakın", dropSub: "veya dosya seçmek için dokunun", out: "Çıktı formatı", quality: "Kalite",
+      source: "Kaynak video", output: "Çıktı", accepts: "Kabul edilen formatlar", rotor: "DÖNÜŞTÜR ↻ CONVERT ↻ TRANSFORME ↻ ", waiting: "çıktı bekleniyor", stamp: "HAZIR ✓", readout: "Canlı okuma", anatomy: "Video anatomisi", container: "Kapsayıcı", vcodec: "Video codec", audio: "Ses", resolution: "Çözünürlük", targetL: "Hedef", estimated: "Tahmini kazanç", signature: "Dosya imzası: bit hızı, süre ve FPS değerinden üretilen ebru deseni", pickCta: "Dosya seç →", ready: "Dosya bekleniyor", pick: "Video dosyası seç", drop: "Videonuzu buraya bırakın", dropSub: "veya dosya seçmek için dokunun", out: "Çıktı formatı", quality: "Kalite",
       qHigh: "Yüksek", qBal: "Dengeli", qSmall: "Küçük dosya", res: "Çözünürlük", orig: "Orijinal", adv: "Gelişmiş ayarlar", codec: "Codec",
       ss: "Başlangıç (sn)", to: "Bitiş (sn)", target: "Hedef boyut (MB)", aspect: "En-boy kırpma", none: "Yok", rot: "Döndür", fps: "FPS",
       mute: "Sesi kaldır", go: "Dönüştür", cancel: "İptal",
@@ -91,11 +94,11 @@ export const UI = {
     ],
   },
   en: {
-    homePath: "en/", home: "Home", howPath: "en/about/", howLabel: "How it works and how to verify it yourself.", locale: "en_US", skip: "Skip to content", navLabel: "Main menu",
+    homePath: "en/", tele: [["Upload", "None"], ["Processing", "In browser"], ["Storage", "None"], ["Engine", "FFmpeg / WASM"]], privTag: "Privacy", answerL: "Short answer", footBig: "Convert.", home: "Home", howPath: "en/about/", howLabel: "How it works and how to verify it yourself.", locale: "en_US", skip: "Skip to content", navLabel: "Main menu",
     nav: [["Converter", "en/"], ["Compress", "en/video-compressor/"], ["MOV to MP4", "en/mov-to-mp4/"], ["About", "en/about/"]],
     shield: ["No upload", "Runs in your browser", "Nothing stored on a server"],
     tool: {
-      pick: "Choose a video file", drop: "Drop your video here", dropSub: "or tap to choose a file", out: "Output format", quality: "Quality",
+      source: "Source video", output: "Output", accepts: "Accepted formats", rotor: "CONVERT ↻ DÖNÜŞTÜR ↻ TRANSFORME ↻ ", waiting: "waiting for output", stamp: "READY ✓", readout: "Live readout", anatomy: "Video anatomy", container: "Container", vcodec: "Video codec", audio: "Audio", resolution: "Resolution", targetL: "Target", estimated: "Estimated gain", signature: "File signature: ebru pattern generated from bitrate, duration and FPS", pickCta: "Choose file →", ready: "Waiting for a file", pick: "Choose a video file", drop: "Drop your video here", dropSub: "or tap to choose a file", out: "Output format", quality: "Quality",
       qHigh: "High", qBal: "Balanced", qSmall: "Small file", res: "Resolution", orig: "Original", adv: "Advanced settings", codec: "Codec",
       ss: "Start (s)", to: "End (s)", target: "Target size (MB)", aspect: "Aspect crop", none: "None", rot: "Rotate", fps: "FPS",
       mute: "Remove audio", go: "Convert", cancel: "Cancel",
@@ -116,11 +119,11 @@ export const UI = {
     ],
   },
   fr: {
-    homePath: "fr/", home: "Accueil", howPath: "fr/a-propos/", howLabel: "Fonctionnement et vérification par vous-même.", locale: "fr_FR", skip: "Aller au contenu", navLabel: "Menu principal",
+    homePath: "fr/", tele: [["Envoi", "Aucun"], ["Traitement", "Navigateur"], ["Stockage", "Aucun"], ["Moteur", "FFmpeg / WASM"]], privTag: "Confidentialité", answerL: "Réponse courte", footBig: "Transforme.", home: "Accueil", howPath: "fr/a-propos/", howLabel: "Fonctionnement et vérification par vous-même.", locale: "fr_FR", skip: "Aller au contenu", navLabel: "Menu principal",
     nav: [["Convertisseur", "fr/"], ["Compresser", "fr/compresser-video/"], ["MOV en MP4", "fr/mov-en-mp4/"], ["À propos", "fr/a-propos/"]],
     shield: ["Aucun envoi", "Traitement dans le navigateur", "Rien n'est stocké"],
     tool: {
-      pick: "Choisir une vidéo", drop: "Déposez votre vidéo ici", dropSub: "ou touchez pour choisir un fichier", out: "Format de sortie", quality: "Qualité",
+      source: "Vidéo source", output: "Sortie", accepts: "Formats acceptés", rotor: "TRANSFORME ↻ DÖNÜŞTÜR ↻ CONVERT ↻ ", waiting: "sortie en attente", stamp: "PRÊT ✓", readout: "Lecture en direct", anatomy: "Anatomie vidéo", container: "Conteneur", vcodec: "Codec vidéo", audio: "Audio", resolution: "Résolution", targetL: "Cible", estimated: "Gain estimé", signature: "Signature du fichier : motif ebru généré à partir du débit, de la durée et des IPS", pickCta: "Choisir un fichier →", ready: "En attente d'un fichier", pick: "Choisir une vidéo", drop: "Déposez votre vidéo ici", dropSub: "ou touchez pour choisir un fichier", out: "Format de sortie", quality: "Qualité",
       qHigh: "Haute", qBal: "Équilibrée", qSmall: "Fichier léger", res: "Résolution", orig: "Originale", adv: "Réglages avancés", codec: "Codec",
       ss: "Début (s)", to: "Fin (s)", target: "Taille cible (Mo)", aspect: "Recadrage", none: "Aucun", rot: "Rotation", fps: "IPS",
       mute: "Supprimer le son", go: "Convertir", cancel: "Annuler",

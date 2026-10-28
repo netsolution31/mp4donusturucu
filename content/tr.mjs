@@ -193,7 +193,7 @@ pages.push({
   lang: "tr", path: "", key: "home", home: true, type: "tool",
   title: "MP4 Dönüştürücü: Videoyu Tarayıcıda Ücretsiz Dönüştürün | mp4donusturucu",
   desc: "Ücretsiz MP4 dönüştürücü. MOV, MKV, AVI, WebM ve daha fazlasını MP4, GIF veya MP3'e tarayıcınızda çevirin. Dosya yüklenmez, filigran yok, kayıt gerekmez.",
-  h1: "MP4 Dönüştürücü", short: "MP4 dönüştürücü",
+  h1: "MP4 Dönüştürücü", short: "MP4 dönüştürücü", tagline: "Videonu içeri bırak. <em>Biz dönüştürelim.</em>",
   lead: "Videonuzu tarayıcınızda dönüştürün. Dosyanız cihazınızdan çıkmaz. MOV, MKV, AVI, WebM, 3GP ve daha fazlasını MP4, WebM, GIF veya MP3'e saniyeler içinde çevirin.",
   tool: { out: "mp4" },
   body: `<p class="answer">MP4 dönüştürücü, video dosyalarını MP4 kapsayıcısına dönüştüren bir araçtır. mp4donusturucu.com işlemi desteklenen tarayıcılarda cihazınızda gerçekleştirir; dosyanız sunucuya yüklenmeden H.264, H.265 veya VP9 gibi uygun codec seçenekleriyle yeniden kodlanabilir.</p>

@@ -23,45 +23,71 @@ const abs = (p) => SITE + "/" + p;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const strip = (s) => String(s).replace(/<[^>]+>/g, "");
 
-const LOGO = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#37D6FF"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke="url(#lg)" stroke-width="2"/><path d="M12 9.5v13l11-6.5z" fill="url(#lg)"/></svg>`;
-const RING = `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#37D6FF"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>${Array.from({ length: 24 }, (_, i) => `<rect x="57" y="4" width="6" height="12" rx="2" fill="url(#rg)" opacity="${(0.25 + (i % 6) / 8).toFixed(2)}" transform="rotate(${i * 15} 60 60)"/>`).join("")}</svg>`;
-const SHIELD = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#31E981" stroke-width="1.6" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>`;
-
+const LOGO = `<svg class="mark" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1.5" y="1.5" width="31" height="31" fill="#F4EFE6" stroke="#171717" stroke-width="3"/><rect x="6" y="9" width="11" height="15" fill="#E63B2E" transform="rotate(-6 11.5 16.5)"/><rect x="17" y="10" width="11" height="15" fill="#C9FF32" stroke="#171717" stroke-width="1.5" transform="rotate(5 22.5 17.5)"/></svg>`;
+const ROTOR = (txt) => `<svg class="rotor-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="rp" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs><circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="2"/><text><textPath href="#rp" textLength="488">${txt}</textPath></text></svg>`;
+const OUTS = ["mp4", "webm", "mov", "mkv", "avi", "gif", "mp3", "m4a", "wav", "ogg"];
 
 function toolBlock(p, u) {
-  const t = p.tool;
+  const t = p.tool, T = u.tool;
   const data = Object.entries(t).map(([k, v]) => `data-${k}="${esc(v)}"`).join(" ");
-  const outs = ["mp4", "webm", "mov", "mkv", "avi", "gif", "mp3", "m4a", "wav", "ogg"];
   const res = ["", "2160", "1440", "1080", "720", "480", "360"];
-  return `<div class="tool" id="tool" ${data}>
-  <div class="drop" id="drop">
-    <input type="file" id="file" accept="video/*,audio/*,.mkv,.flv,.ts,.mts,.m2ts,.3gp,.ogv,.mpg,.mpeg,.m4v,.avi,.mov,.gif" aria-label="${esc(u.tool.pick)}">
-    <div><div class="ring">${RING}<div class="core"><svg width="26" height="26" viewBox="0 0 24 24" fill="#061018" aria-hidden="true"><path d="M12 4l-5 5h3v6h4V9h3z"/><path d="M5 18h14v2H5z"/></svg></div></div>
-    <strong>${u.tool.drop}</strong><small>${u.tool.dropSub}</small>
-    <div class="chips">${["MP4", "MOV", "MKV", "AVI", "WEBM", "3GP", "TS", "FLV"].map((f) => `<span class="chip">${f}</span>`).join("")}</div></div>
+  const sel = (id, label, opts) => `<label class="field"><span>${label}</span><select id="${id}">${opts}</select></label>`;
+  return `<div class="machine" id="tool" ${data}>
+  <section class="bay bay-src" aria-label="${T.source}">
+    <header class="bay-h"><span>${T.source}</span><span class="bay-idx">IN</span></header>
+    <div class="slot" id="drop">
+      <input type="file" id="file" accept="video/*,audio/*,.mkv,.flv,.ts,.mts,.m2ts,.3gp,.ogv,.mpg,.mpeg,.m4v,.avi,.mov,.gif" aria-label="${esc(T.pick)}">
+      <div class="filecard filecard-src" data-state="idle">
+        <div class="fc-idle"><strong>${T.drop}</strong><span class="fc-cta">${T.pickCta}</span><small>${T.dropSub}</small></div>
+        <div class="fc-file"><b class="fc-name"></b><span class="fc-size"></span><span class="fc-spec"></span></div>
+      </div>
+    </div>
+    <ul class="accepts" aria-label="${T.accepts}">${["MOV", "MKV", "AVI", "WEBM", "3GP", "TS", "FLV", "MPEG", "OGV", "MP4"].map((f) => `<li>${f}</li>`).join("")}</ul>
+  </section>
+  <div class="rotor" aria-hidden="true">${ROTOR(T.rotor)}<span class="rotor-core">&#8635;</span></div>
+  <section class="bay bay-out" aria-label="${T.output}">
+    <header class="bay-h"><span>${T.output}</span><span class="bay-idx">OUT</span></header>
+    <div class="filecard filecard-out" data-state="idle">
+      <b class="fc-name">${T.waiting}</b><span class="fc-size">&nbsp;</span><span class="fc-spec">&nbsp;</span>
+      <span class="stamp" aria-hidden="true">${T.stamp}</span>
+    </div>
+    <fieldset class="targets"><legend>${T.out}</legend>${OUTS.map((o) => `<label class="tgt"><input type="radio" name="out" value="${o}"${o === (t.out || "mp4") ? " checked" : ""}><span>${o.toUpperCase()}</span></label>`).join("")}</fieldset>
+    <div class="row2">
+      ${sel("quality", T.quality, `<option value="high">${T.qHigh}</option><option value="balanced" selected>${T.qBal}</option><option value="small">${T.qSmall}</option>`)}
+      ${sel("res", T.res, res.map((r) => `<option value="${r}">${r ? r + "p" : T.orig}</option>`).join(""))}
+    </div>
+    <details class="adv"><summary>${T.adv}</summary><div class="adv-grid">
+      ${sel("codec", T.codec, "")}
+      <label class="field"><span>${T.ss}</span><input type="number" id="ss" min="0" step="0.1" placeholder="0" inputmode="decimal"></label>
+      <label class="field"><span>${T.to}</span><input type="number" id="to" min="0" step="0.1" inputmode="decimal"></label>
+      <label class="field"><span>${T.target}</span><input type="number" id="target" min="0" step="1" placeholder="-" inputmode="numeric"></label>
+      ${sel("aspect", T.aspect, `<option value="">${T.none}</option><option>16:9</option><option>9:16</option><option>1:1</option><option>4:5</option>`)}
+      ${sel("rot", T.rot, `<option value="0">0&deg;</option><option value="90">90&deg;</option><option value="180">180&deg;</option><option value="270">270&deg;</option>`)}
+      ${sel("fps", T.fps, `<option value="">${T.orig}</option><option>60</option><option>30</option><option>24</option><option>15</option><option>12</option>`)}
+      <label class="check"><input type="checkbox" id="mute"><span>${T.mute}</span></label>
+    </div></details>
+    <div class="actions"><button class="go" id="go" type="button" disabled><span>${T.go}</span><span aria-hidden="true">&rarr;</span></button><button class="stop" id="cancel" type="button" hidden>${T.cancel}</button></div>
+  </section>
+  <aside class="readout" aria-label="${T.readout}">
+    <header class="bay-h"><span>${T.readout}</span></header>
+    <p class="ro-title">${T.anatomy}</p>
+    <dl class="ro">
+      <div><dt>${T.container}</dt><dd data-ro="container">...</dd></div>
+      <div><dt>${T.vcodec}</dt><dd data-ro="vcodec">...</dd></div>
+      <div><dt>${T.audio}</dt><dd data-ro="audio">...</dd></div>
+      <div><dt>${T.resolution}</dt><dd data-ro="res">...</dd></div>
+      <div><dt>${T.targetL}</dt><dd data-ro="target">...</dd></div>
+      <div class="ro-big"><dt>${T.estimated}</dt><dd data-ro="gain">...</dd></div>
+    </dl>
+    <figure class="sig"><canvas class="ebru" data-seed="${esc(p.path || "home")}" aria-hidden="true"></canvas><figcaption>${T.signature}</figcaption></figure>
+  </aside>
+  <div class="timeline" role="status" aria-live="polite">
+    <div class="frames" aria-hidden="true">${"<i></i>".repeat(32)}</div>
+    <div class="tl-text"><span class="l">${T.ready}</span><span class="bar mono" aria-hidden="true"></span><span class="r"></span></div>
   </div>
-  <div class="file"><div style="flex:1;min-width:0"><div class="name"></div><div class="meta"></div></div><div class="fmtflow"></div></div>
-  <div class="opts">
-    <label>${u.tool.out}<select id="out">${outs.map((o) => `<option value="${o}">${o.toUpperCase()}</option>`).join("")}</select></label>
-    <label>${u.tool.quality}<select id="quality"><option value="high">${u.tool.qHigh}</option><option value="balanced" selected>${u.tool.qBal}</option><option value="small">${u.tool.qSmall}</option></select></label>
-    <label>${u.tool.res}<select id="res">${res.map((r) => `<option value="${r}">${r ? r + "p" : u.tool.orig}</option>`).join("")}</select></label>
-  </div>
-  <details class="adv"><summary>${u.tool.adv}</summary><div class="grid">
-    <label>${u.tool.codec}<select id="codec"></select></label>
-    <label>${u.tool.ss}<input type="number" id="ss" min="0" step="0.1" placeholder="0" inputmode="decimal"></label>
-    <label>${u.tool.to}<input type="number" id="to" min="0" step="0.1" inputmode="decimal"></label>
-    <label>${u.tool.target}<input type="number" id="target" min="0" step="1" placeholder="-" inputmode="numeric"></label>
-    <label>${u.tool.aspect}<select id="aspect"><option value="">${u.tool.none}</option><option>16:9</option><option>9:16</option><option>1:1</option><option>4:5</option></select></label>
-    <label>${u.tool.rot}<select id="rot"><option value="0">0&deg;</option><option value="90">90&deg;</option><option value="180">180&deg;</option><option value="270">270&deg;</option></select></label>
-    <label>${u.tool.fps}<select id="fps"><option value="">${u.tool.orig}</option><option>60</option><option>30</option><option>24</option><option>15</option><option>12</option></select></label>
-    <label class="check"><input type="checkbox" id="mute"> ${u.tool.mute}</label>
-  </div></details>
-  <div class="est" aria-live="polite"></div>
-  <div class="actions"><button class="btn" id="go" type="button" disabled>${u.tool.go}</button><button class="btn ghost" id="cancel" type="button" hidden>${u.tool.cancel}</button></div>
-  <div class="progress" role="status"><div class="bar"><i></i></div><div class="ptext"><span class="l"></span><span class="r"></span></div></div>
   <div class="result" aria-live="polite"></div>
   <div class="err" role="alert"></div>
-  <p class="note">${u.tool.note}</p>
+  <p class="note">${T.note}</p>
 </div>
 <script type="application/json" id="i18n">${JSON.stringify(u.js)}</script>`;
 }
@@ -69,7 +95,7 @@ function toolBlock(p, u) {
 function related(p, u) {
   const list = (p.related || []).map((x) => byPath.get(x)).filter(Boolean);
   if (!list.length) return "";
-  return `<section><h2>${u.related}</h2><div class="cards">${list.map((r) => `<a class="card" href="${href(r.path)}"><b>${r.short || r.h1}</b><span>${r.cardText || strip(r.desc).slice(0, 90)}</span></a>`).join("")}</div></section>`;
+  return `<section class="rel"><h2>${u.related}</h2><div class="cards">${list.map((r) => `<a class="card" href="${href(r.path)}"><b>${r.short || r.h1}</b><span>${r.cardText || strip(r.desc).slice(0, 90)}</span></a>`).join("")}</div></section>`;
 }
 
 function faqBlock(p, u) {
@@ -121,13 +147,16 @@ function langSwitch(p) {
 
 function layout(p) {
   const u = UI[p.lang];
-  const crumbs = p.crumbs?.length || !p.home
-    ? `<nav class="crumbs" aria-label="breadcrumb"><a href="${href(u.homePath)}">${u.home}</a>${(p.crumbs || []).map(([n, x]) => ` / <a href="${href(x)}">${n}</a>`).join("")} / <span>${p.short || strip(p.h1)}</span></nav>` : "";
+  const crumbs = !p.home
+    ? `<nav class="crumbs" aria-label="breadcrumb"><a href="${href(u.homePath)}">${u.home}</a>${(p.crumbs || []).map(([n, x]) => `<span aria-hidden="true">/</span><a href="${href(x)}">${n}</a>`).join("")}<span aria-hidden="true">/</span><span aria-current="page">${p.short || strip(p.h1)}</span></nav>` : "";
+  const h1 = p.h1.replace("→", '<span class="arr">→</span>');
+  const tele = `<dl class="tele">${u.tele.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
   const head = p.tool
-    ? `<section class="hero"><div>${crumbs}<h1>${p.h1}</h1><p class="lead">${p.lead}</p><ul class="shield">${u.shield.map((s) => `<li>${s}</li>`).join("")}</ul></div>${toolBlock(p, u)}</section>`
-    : `<div style="padding-top:28px">${crumbs}<h1>${p.h1}</h1>${p.lead ? `<p class="lead">${p.lead}</p>` : ""}${p.type === "guide" ? `<p class="updated">${u.updated}: <time datetime="${UPDATED}">${u.date}</time> · ${u.byline}</p>` : ""}</div>`;
-  const privacy = p.tool ? `<aside class="privacy">${SHIELD}<div><h3 style="margin-top:0">${u.privTitle}</h3><p>${u.privText} <a href="${href(u.howPath)}">${u.howLabel}</a></p></div></aside>` : "";
-  const sources = p.sources ? `<p class="sources">${u.sourcesLabel}: ${p.sources.map(([n, x]) => `<a href="${x}" rel="noopener">${n}</a>`).join(" · ")}</p>` : "";
+    ? `<section class="hero"><div class="hero-head"><div class="hh-main">${crumbs}<h1>${h1}</h1>${p.tagline ? `<p class="tagline">${p.tagline}</p>` : ""}<p class="lead">${p.lead}</p></div>${tele}</div>${toolBlock(p, u)}</section>`
+    : `<section class="page-head"><div class="ph-main">${crumbs}<h1>${h1}</h1>${p.lead ? `<p class="lead">${p.lead}</p>` : ""}${p.type === "guide" ? `<p class="updated">${u.updated}: <time datetime="${UPDATED}">${u.date}</time><br>${u.byline}</p>` : ""}</div><canvas class="ebru ebru-band" data-seed="${esc(p.path || "404")}" aria-hidden="true"></canvas></section>`;
+  const privacy = p.tool ? `<aside class="privacy"><p class="pv-tag">${u.privTag}</p><h2>${u.privTitle}</h2><p>${u.privText} <a href="${href(u.howPath)}">${u.howLabel}</a></p></aside>` : "";
+  const sources = p.sources ? `<p class="sources"><span>${u.sourcesLabel}</span> ${p.sources.map(([n, x]) => `<a href="${x}" rel="noopener">${n}</a>`).join(" ")}</p>` : "";
+  const body = (p.body || "").replaceAll('class="answer"', `class="answer" data-l="${u.answerL}"`);
   const title = p.title;
   return `<!doctype html>
 <html lang="${p.lang}" data-base="${BASE}">
@@ -138,7 +167,7 @@ function layout(p) {
 <meta name="description" content="${esc(p.desc)}">
 ${p.noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${abs(p.path)}">`}
 ${p.noindex ? "" : alternates(p)}
-<meta property="og:type" content="website">
+<meta property="og:type" content="${p.type === "guide" ? "article" : "website"}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(p.desc)}">
 <meta property="og:url" content="${abs(p.path)}">
@@ -149,41 +178,45 @@ ${p.noindex ? "" : alternates(p)}
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="mp4donusturucu.com">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#080A0F">
+<meta name="theme-color" content="#F4EFE6">
 <link rel="icon" href="${href("assets/icon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="${href("assets/style.css")}">
 ${schema(p, u)}
 </head>
-<body>
+<body class="${p.tool ? "is-tool" : "is-page"}">
 <a class="skip" href="#main">${u.skip}</a>
 <header class="top"><div class="wrap">
-<a class="logo" href="${href(u.homePath)}">${LOGO}<span>mp4<b>donusturucu</b></span></a>
-<nav class="nav" aria-label="${u.navLabel}">${u.nav.map(([n, x], i) => `<a href="${href(x)}"${i > 0 ? ' class="hide-m"' : ""}>${n}</a>`).join("")}${langSwitch(p)}</nav>
+<a class="logo" href="${href(u.homePath)}">${LOGO}<span class="wm">mp4<b>donusturucu</b></span></a>
+<nav class="nav" aria-label="${u.navLabel}">${u.nav.map(([n, x], i) => `<a href="${href(x)}"${i > 0 ? ' class="hide-m"' : ""}>${n}</a>`).join("")}</nav>
+${langSwitch(p)}
 </div></header>
 <main id="main" class="wrap">
 ${head}
 <div class="content">
-${p.body || ""}
+${body}
 ${privacy}
 ${faqBlock(p, u)}
 ${sources}
 </div>
 ${related(p, u)}
 </main>
-<footer><div class="wrap"><div class="cols">
-<div><a class="logo" href="${href(u.homePath)}">${LOGO}<span>mp4<b>donusturucu</b></span></a><p>${u.footerText}</p></div>
-${u.footer.map(([t, links]) => `<div><h4>${t}</h4><ul>${links.filter((x) => byPath.has(x)).map((x) => `<li><a href="${href(x)}">${byPath.get(x).short || strip(byPath.get(x).h1)}</a></li>`).join("")}</ul></div>`).join("")}
-</div><p style="margin-top:28px">&copy; 2026 mp4donusturucu.com · ${u.footerLegal}</p></div></footer>
-${p.tool || p.calc ? `<script type="module" src="${href("assets/app.js")}"></script>` : ""}
+<footer class="foot"><div class="wrap">
+<p class="foot-big" aria-hidden="true">${u.footBig}</p>
+<div class="cols">
+<div><a class="logo" href="${href(u.homePath)}">${LOGO}<span class="wm">mp4<b>donusturucu</b></span></a><p>${u.footerText}</p></div>
+${u.footer.map(([t, links]) => `<div><h2>${t}</h2><ul>${links.filter((x) => byPath.has(x)).map((x) => `<li><a href="${href(x)}">${byPath.get(x).short || strip(byPath.get(x).h1)}</a></li>`).join("")}</ul></div>`).join("")}
+</div><p class="legal">&copy; 2026 mp4donusturucu.com. ${u.footerLegal}</p></div></footer>
+<script type="module" src="${href("assets/app.js")}"></script>
 </body>
 </html>`;
 }
 
 // ---------- build ----------
-fs.rmSync(OUT, { recursive: true, force: true });
+fs.mkdirSync(OUT, { recursive: true });
+for (const f of fs.readdirSync(OUT)) fs.rmSync(path.join(OUT, f), { recursive: true, force: true });
 const write = (rel, content) => {
   const f = path.join(OUT, rel);
   fs.mkdirSync(path.dirname(f), { recursive: true });

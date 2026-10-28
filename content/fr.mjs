@@ -16,7 +16,7 @@ export default [
   tool({
     path: "fr/", key: "home", crumbs: undefined, home: true, title: "Convertisseur MP4 gratuit dans le navigateur, sans envoi",
     desc: "Convertisseur MP4 gratuit qui fonctionne dans votre navigateur. Convertissez MOV, MKV, AVI, WebM en MP4, GIF ou MP3. Sans envoi, sans filigrane, sans inscription.",
-    h1: "Convertisseur MP4", short: "Convertisseur MP4",
+    h1: "Convertisseur MP4", short: "Convertisseur MP4", tagline: "Déposez la vidéo. <em>On la transforme.</em>",
     lead: "Convertissez vos vidéos dans votre navigateur. Vos fichiers restent sur votre appareil. MOV, MKV, AVI, WebM, 3GP et plus vers MP4, WebM, GIF ou MP3.",
     tool: { out: "mp4" },
     body: `<p class="answer">Un convertisseur MP4 transforme une vidéo vers le conteneur MP4, en la réencodant si nécessaire. mp4donusturucu.com réalise cette opération sur votre appareil dans les navigateurs compatibles : le fichier n'est jamais envoyé et peut être encodé en H.264, H.265 ou VP9 selon l'usage.</p>

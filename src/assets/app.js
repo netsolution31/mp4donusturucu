@@ -1,26 +1,33 @@
-// mp4donusturucu.com - client-side converter (ffmpeg.wasm, loaded on demand)
+// mp4donusturucu.com - Dönüşüm Makinesi: client-side converter (ffmpeg.wasm, loaded on demand)
 const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const BASE = document.documentElement.dataset.base || "/";
 const abs = (p) => new URL(BASE + p, location.href).href;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const tool = $("#tool");
 if (tool) initTool(tool);
 const calc = $("#calc");
 if (calc) initCalc(calc);
+initEbru();
 
 function initTool(root) {
   const L = JSON.parse($("#i18n").textContent);
   const cfg = root.dataset;
   const el = {
-    input: $("#file", root), drop: $(".drop", root), box: $(".file", root), name: $(".file .name", root),
-    meta: $(".file .meta", root), flow: $(".fmtflow", root), out: $("#out", root), q: $("#quality", root),
-    res: $("#res", root), codec: $("#codec", root), ss: $("#ss", root), to: $("#to", root), rot: $("#rot", root),
-    fps: $("#fps", root), mute: $("#mute", root), target: $("#target", root), aspect: $("#aspect", root),
-    est: $(".est", root), go: $("#go", root), cancel: $("#cancel", root), prog: $(".progress", root),
-    bar: $(".bar i", root), pl: $(".ptext .l", root), pr: $(".ptext .r", root), result: $(".result", root),
-    err: $(".err", root), actions: $(".actions", root),
+    input: $("#file", root), drop: $(".slot", root), src: $(".filecard-src", root), outCard: $(".filecard-out", root),
+    targets: $(".targets", root), q: $("#quality", root), res: $("#res", root), codec: $("#codec", root),
+    ss: $("#ss", root), to: $("#to", root), rot: $("#rot", root), fps: $("#fps", root), mute: $("#mute", root),
+    target: $("#target", root), aspect: $("#aspect", root), go: $("#go", root), cancel: $("#cancel", root),
+    frames: $$(".frames i", root), tlL: $(".tl-text .l", root), tlBar: $(".tl-text .bar", root), tlR: $(".tl-text .r", root),
+    result: $(".result", root), err: $(".err", root), sig: $(".sig canvas", root),
   };
-  let file = null, info = {}, ffmpeg = null, loading = null, lastUrl = null, busy = false, written = "";
+  // the target format is a radio group; expose it like a select
+  el.out = {
+    get value() { return $("input[name=out]:checked", root)?.value || "mp4"; },
+    set value(v) { const r = $(`input[name=out][value="${v}"]`, root); if (r) r.checked = true; },
+  };
+  let file = null, info = {}, ffmpeg = null, loading = null, urls = [], busy = false, written = "";
 
   // presets from the landing page
   if (cfg.out) el.out.value = cfg.out;
@@ -37,16 +44,22 @@ function initTool(root) {
   const fmtMB = (b) => (b / 1048576).toFixed(b < 10485760 ? 2 : 1) + " MB";
   const ext = (n) => (n.split(".").pop() || "").toLowerCase();
   const isAudio = (f) => ["mp3", "m4a", "wav", "ogg"].includes(f);
+  const flip = (node, text) => {
+    if (node.textContent === text) return;
+    node.textContent = text;
+    node.classList.remove("flip"); void node.offsetWidth; node.classList.add("flip");
+  };
 
   ["dragenter", "dragover"].forEach((t) => el.drop.addEventListener(t, (e) => { e.preventDefault(); el.drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach((t) => el.drop.addEventListener(t, () => el.drop.classList.remove("over")));
   el.drop.addEventListener("drop", (e) => { e.preventDefault(); if (e.dataTransfer.files[0]) pick(e.dataTransfer.files[0]); });
   el.input.addEventListener("change", () => el.input.files[0] && pick(el.input.files[0]));
-  [el.out, el.q, el.res, el.codec, el.ss, el.to, el.target, el.fps, el.mute].forEach((n) => n.addEventListener("input", estimate));
-  el.out.addEventListener("change", syncCodec);
+  [el.q, el.res, el.codec, el.ss, el.to, el.target, el.fps, el.mute, el.aspect, el.rot].forEach((n) => n.addEventListener("input", estimate));
+  el.targets.addEventListener("change", syncCodec);
   el.go.addEventListener("click", convert);
   el.cancel.addEventListener("click", cancel);
   syncCodec();
+  setTimeline(0, L.ready, false);
 
   function syncCodec() {
     const o = el.out.value;
@@ -61,17 +74,17 @@ function initTool(root) {
 
   function pick(f) {
     error(null);
-    show(el.result, false);
+    resetResult();
     if (f.size > 2 * 1024 ** 3) return error(L.errBig);
     file = f;
     info = { size: f.size };
-    el.name.textContent = f.name;
-    el.flow.innerHTML = `${ext(f.name).toUpperCase()} &rarr; <span>${el.out.value.toUpperCase()}</span>`;
-    renderMeta();
-    show(el.box);
     el.go.disabled = false;
-    el.actions.classList.add("sticky");
+    document.body.classList.add("has-file");
+    el.src.dataset.state = "file";
+    if (!reduced) { el.src.classList.remove("drop-in"); void el.src.offsetWidth; el.src.classList.add("drop-in"); }
     if (f.size > 500 * 1048576) error(L.warnBig);
+    render();
+    setTimeline(0, L.loaded, false);
     // quick metadata from the browser itself
     const v = document.createElement("video");
     v.preload = "metadata";
@@ -79,27 +92,96 @@ function initTool(root) {
     v.onloadedmetadata = () => {
       if (isFinite(v.duration)) info.duration = v.duration;
       if (v.videoWidth) { info.w = v.videoWidth; info.h = v.videoHeight; }
+      info.playable = !!v.videoWidth;
       URL.revokeObjectURL(v.src);
       if (info.duration && !el.to.value) el.to.placeholder = info.duration.toFixed(1);
-      renderMeta(); estimate();
+      render();
     };
-    v.onerror = () => URL.revokeObjectURL(v.src);
+    v.onerror = () => { info.playable = false; URL.revokeObjectURL(v.src); };
     // start loading the engine in the background
     getFFmpeg().then(probe).catch(() => {});
+  }
+
+  // ---------- rendering of cards and readout ----------
+  function render() {
+    if (!file) return;
+    const e = ext(file.name);
+    $(".fc-name", el.src).textContent = file.name;
+    $(".fc-size", el.src).textContent = fmtMB(info.size);
+    $(".fc-spec", el.src).textContent = [info.w && `${info.w}×${info.h}`, info.vcodec, info.fps && `${info.fps} fps`, info.duration && fmtTime(info.duration)].filter(Boolean).join(" / ");
+    ro("container", L.containers[e] || e.toUpperCase());
+    ro("vcodec", info.vcodec ? info.vcodec.toUpperCase() : info.probed ? L.none : "...");
+    ro("audio", info.acodec ? info.acodec.toUpperCase() + (info.ahz ? ` ${Math.round(info.ahz / 1000)} kHz` : "") : info.probed ? L.none : "...");
+    ro("res", info.w ? `${info.w}×${info.h}${info.fps ? ` / ${info.fps} fps` : ""}` : "...");
     estimate();
+    drawSignature();
+  }
+  function ro(key, val) { const n = $(`[data-ro="${key}"]`, root); if (n) flip(n, val); }
+
+  function outSpec() {
+    const o = el.out.value;
+    if (isAudio(o)) return `${o.toUpperCase()} / ${o === "wav" ? "PCM" : o === "ogg" ? "VORBIS" : o === "m4a" ? "AAC" : "MP3"}`;
+    if (o === "gif") return `GIF / ${Math.min(+el.res.value || 480, 720)} px`;
+    const h = targetHeight();
+    return [h ? `${h}p` : null, (L.codecs[el.codec.value] || "").split(" ")[0]].filter(Boolean).join(" / ");
+  }
+  function targetHeight() {
+    const short = info.w ? Math.min(info.w, info.h) : 0;
+    const r = +el.res.value;
+    if (!short) return r || 0;
+    return r ? Math.min(r, short) : short;
   }
 
-  function renderMeta() {
-    const b = [`<span class="badge">${fmtMB(info.size)}</span>`];
-    if (info.w) b.push(`<span class="badge">${info.w}&times;${info.h}</span>`);
-    if (info.duration) b.push(`<span class="badge">${fmtTime(info.duration)}</span>`);
-    if (info.vcodec) b.push(`<span class="badge v">${info.vcodec}</span>`);
-    if (info.fps) b.push(`<span class="badge v">${info.fps} fps</span>`);
-    if (info.acodec) b.push(`<span class="badge v">${info.acodec}</span>`);
-    el.meta.innerHTML = b.join("");
-    if (file) el.flow.innerHTML = `${ext(file.name).toUpperCase()} &rarr; <span>${el.out.value.toUpperCase()}</span>`;
+  function estimate() {
+    const o = el.out.value;
+    const base = file ? file.name.replace(/\.[^.]+$/, "") || "video" : "";
+    flip($(".fc-name", el.outCard), file ? `${base}.${o}` : $(".fc-name", el.outCard).textContent);
+    if (!file) return;
+    el.outCard.dataset.state = "file";
+    flip($(".fc-spec", el.outCard), outSpec());
+    ro("target", `${o.toUpperCase()} / ${outSpec()}`);
+    const mb = estimateMB();
+    flip($(".fc-size", el.outCard), mb ? `~${mb.toFixed(mb < 10 ? 1 : 0)} MB` : o === "gif" ? "GIF" : "...");
+    ro("gain", mb ? `${mb < info.size / 1048576 ? "-" : "+"}${Math.abs(Math.round((1 - mb / (info.size / 1048576)) * 1000) / 10)}%` : "...");
   }
 
+  function estimateMB() {
+    const o = el.out.value;
+    const dur = clipDuration();
+    if (!dur) return 0;
+    let kbps;
+    if (isAudio(o)) kbps = o === "wav" ? 1411 : o === "ogg" ? 160 : el.q.value === "small" ? 128 : el.q.value === "high" ? 256 : 192;
+    else if (o === "gif") return 0;
+    else if (+el.target.value > 0) return +el.target.value;
+    else {
+      const h = targetHeight() || 1080;
+      const table = [[2160, 16000], [1440, 9000], [1080, 5000], [720, 2800], [480, 1400], [360, 800]];
+      const b = (table.find(([r]) => h >= r) || table[5])[1];
+      const qf = { high: 1.4, balanced: 1, small: 0.55 }[el.q.value];
+      const cf = el.codec.value === "h265" || el.codec.value === "vp9" ? 0.7 : el.codec.value === "mpeg4" ? 1.6 : 1;
+      kbps = b * qf * cf + (el.mute.checked ? 0 : 128);
+    }
+    return (kbps * dur) / 8 / 1024;
+  }
+
+  function clipDuration() {
+    const d = info.duration;
+    if (!d) return 0;
+    const s = Math.max(0, +el.ss.value || 0);
+    const e = Math.min(d, +el.to.value || d);
+    return Math.max(0.1, e - s);
+  }
+
+  // file signature: ebru seeded by the file's own numbers
+  function drawSignature() {
+    if (!el.sig || !info.duration) return;
+    const kbps = info.duration ? (info.size * 8) / 1024 / info.duration : 0;
+    el.sig.dataset.seed = `${file.name}|${info.size}`;
+    el.sig.dataset.params = JSON.stringify({ kbps, dur: info.duration, fps: info.fps || 30, ratio: info.w ? info.w / info.h : 16 / 9, codec: info.vcodec || "" });
+    paintEbru(el.sig);
+  }
+
+  // ---------- engine ----------
   function getFFmpeg() {
     if (ffmpeg?.loaded) return Promise.resolve(ffmpeg);
     if (loading) return loading;
@@ -121,7 +203,7 @@ function initTool(root) {
   }
 
   async function doProbe(ff, f, info) {
-    if (written && written !== "") await ff.deleteFile(written).catch(() => {});
+    if (written) await ff.deleteFile(written).catch(() => {});
     written = "";
     const name = "in." + (ext(f.name) || "bin");
     const log = [];
@@ -140,41 +222,11 @@ function initTool(root) {
     if (vs) { info.vcodec = vs[1]; if (!info.w) { info.w = +vs[2]; info.h = +vs[3]; } }
     const fr = txt.match(/([\d.]+) fps/);
     if (fr) info.fps = +fr[1];
-    const as = txt.match(/Audio: (\w+)/);
-    if (as) info.acodec = as[1];
+    const as = txt.match(/Audio: (\w+)(?:[^\n]*?(\d{4,6}) Hz)?/);
+    if (as) { info.acodec = as[1]; if (as[2]) info.ahz = +as[2]; }
     info.hasAudio = !!as;
     info.probed = true;
-    renderMeta(); estimate();
-  }
-
-  function estimate() {
-    if (!file) return;
-    renderMeta();
-    const o = el.out.value;
-    const dur = clipDuration();
-    if (!dur) { el.est.textContent = ""; return; }
-    let kbps;
-    if (isAudio(o)) kbps = o === "wav" ? 1411 : o === "ogg" ? 160 : 192;
-    else if (o === "gif") { el.est.textContent = L.estGif; return; }
-    else if (+el.target.value > 0) { el.est.textContent = `${L.est}: ~${(+el.target.value).toFixed(1)} MB (${L.target})`; return; }
-    else {
-      const h = Math.min(+el.res.value || info.h || 1080, info.h ? Math.min(info.w, info.h) : 1080);
-      const table = [[2160, 16000], [1440, 9000], [1080, 5000], [720, 2800], [480, 1400], [360, 800]];
-      const base = (table.find(([r]) => h >= r) || table[5])[1];
-      const qf = { high: 1.4, balanced: 1, small: 0.55 }[el.q.value];
-      const cf = el.codec.value === "h265" || el.codec.value === "vp9" ? 0.7 : el.codec.value === "mpeg4" ? 1.6 : 1;
-      kbps = base * qf * cf + (el.mute.checked ? 0 : 128);
-    }
-    const mb = (kbps * dur) / 8 / 1024;
-    el.est.textContent = `${L.est}: ~${mb.toFixed(1)} MB`;
-  }
-
-  function clipDuration() {
-    const d = info.duration;
-    if (!d) return 0;
-    const s = Math.max(0, +el.ss.value || 0);
-    const e = Math.min(d, +el.to.value || d);
-    return Math.max(0.1, e - s);
+    if (file === f) render();
   }
 
   function buildArgs(inName, outName) {
@@ -248,26 +300,43 @@ function initTool(root) {
     return args.concat(outName);
   }
 
+  // ---------- timeline: frames get crushed as the encode advances ----------
+  function setTimeline(p, label, active) {
+    const n = el.frames.length;
+    const ratio = Math.max(0.35, Math.min(1, (estimateMB() || info.size / 1048576) / (info.size / 1048576 || 1)));
+    el.frames.forEach((f, i) => {
+      const pos = (i + 1) / n * 100;
+      const done = pos <= p;
+      f.classList.toggle("done", done && (!active || p >= 100));
+      f.classList.toggle("on", active && done && p < 100);
+      f.style.transform = done && active ? `scaleX(${ratio.toFixed(2)})` : p >= 100 ? `scaleX(${ratio.toFixed(2)})` : "";
+    });
+    const cells = 18, full = Math.round((p / 100) * cells);
+    el.tlL.textContent = label;
+    el.tlBar.textContent = active || p >= 100 ? "█".repeat(full) + "░".repeat(cells - full) : "";
+    el.tlR.textContent = active || p >= 100 ? Math.round(p) + "%" : "";
+  }
+
   async function convert() {
     if (!file || busy) return;
     busy = true;
     error(null);
-    show(el.result, false);
-    show(el.prog);
+    resetResult();
+    root.classList.add("is-busy");
     el.go.disabled = true;
     el.cancel.hidden = false;
-    setProg(0, L.loading);
+    setTimeline(0, L.loading, true);
     const o = el.out.value;
     const outName = "out." + o;
     const total = clipDuration();
     const onLog = ({ message }) => {
       const m = message.match(/time=(\d+):(\d+):([\d.]+)/);
-      if (m && total) setProg(Math.min(99, ((+m[1] * 3600 + +m[2] * 60 + +m[3]) / total) * 100), L.converting);
+      if (m && total) setTimeline(Math.min(99, ((+m[1] * 3600 + +m[2] * 60 + +m[3]) / total) * 100), L.converting, true);
     };
     try {
       const ff = await getFFmpeg();
       await probe(ff);
-      setProg(1, L.converting);
+      setTimeline(1, L.converting, true);
       ff.on("log", onLog);
       const t0 = performance.now();
       const ret = await ff.exec(buildArgs(info.inName, outName));
@@ -278,29 +347,67 @@ function initTool(root) {
       if (!data?.length) throw new Error("empty");
       const mime = { mp4: "video/mp4", mov: "video/quicktime", mkv: "video/x-matroska", webm: "video/webm", avi: "video/x-msvideo", gif: "image/gif", mp3: "audio/mpeg", m4a: "audio/mp4", wav: "audio/wav", ogg: "audio/ogg" }[o];
       const blob = new Blob([data.buffer], { type: mime });
-      if (lastUrl) URL.revokeObjectURL(lastUrl);
-      lastUrl = URL.createObjectURL(blob);
-      const base = file.name.replace(/\.[^.]+$/, "") || "video";
-      const secs = ((performance.now() - t0) / 1000).toFixed(1);
-      const diff = Math.round((1 - blob.size / file.size) * 100);
-      const media = o === "gif" ? `<img src="${lastUrl}" alt="">` : isAudio(o) ? `<audio controls src="${lastUrl}"></audio>` : ["mp4", "webm", "mov"].includes(o) ? `<video controls playsinline src="${lastUrl}"></video>` : "";
-      el.result.innerHTML = `${media}<p><strong>${L.done}</strong> <span class="badge">${fmtMB(blob.size)}</span> <span class="badge v">${diff >= 0 ? "-" + diff : "+" + -diff}%</span> <span class="badge v">${secs} s</span></p>
-        <div class="actions"><a class="btn" href="${lastUrl}" download="${escapeHtml(base)}.${o}">${L.download} .${o.toUpperCase()}</a><button class="btn ghost" type="button" data-again>${L.again}</button></div>`;
-      $("[data-again]", el.result).onclick = () => { show(el.result, false); el.go.disabled = false; };
-      setProg(100, L.done);
-      show(el.result);
+      showResult(blob, o, (performance.now() - t0) / 1000);
     } catch (e) {
-      ff_off(onLog);
+      try { ffmpeg?.off("log", onLog); } catch {}
       if (e?.message !== "cancel") error(L.errConv + (e?.message ? ` (${String(e.message).slice(0, 80)})` : ""));
-      show(el.prog, false);
+      setTimeline(0, L.loaded, false);
     } finally {
       busy = false;
+      root.classList.remove("is-busy");
       el.cancel.hidden = true;
       el.go.disabled = false;
     }
   }
 
-  function ff_off(fn) { try { ffmpeg?.off("log", fn); } catch {} }
+  function showResult(blob, o, secs) {
+    const out = URL.createObjectURL(blob);
+    urls.push(out);
+    const base = file.name.replace(/\.[^.]+$/, "") || "video";
+    const gain = Math.round((1 - blob.size / file.size) * 1000) / 10;
+    const playableOut = ["mp4", "webm", "mov"].includes(o);
+    let media = "";
+    if (playableOut && info.playable) {
+      const src = URL.createObjectURL(file);
+      urls.push(src);
+      media = `<div class="cmp" role="group" aria-label="${L.compare}"><video class="after" src="${out}" muted playsinline preload="metadata"></video><video class="before" src="${src}" muted playsinline preload="metadata"></video><span class="divider"></span><span class="tag tag-b">${L.before} ${fmtMB(file.size)}</span><span class="tag tag-a">${L.after} ${fmtMB(blob.size)}</span><input type="range" min="0" max="100" value="50" aria-label="${L.compare}"><button class="cmp-play" type="button">▶ / ❚❚</button></div>`;
+    } else if (playableOut) media = `<video class="solo" controls playsinline src="${out}"></video>`;
+    else if (o === "gif") media = `<img class="solo" src="${out}" alt="">`;
+    else if (isAudio(o)) media = `<audio controls src="${out}"></audio>`;
+    el.result.innerHTML = `${media}<div class="sum"><span class="crush"><s>${fmtMB(file.size)}</s> → ${fmtMB(blob.size)}</span><span class="gain">${gain >= 0 ? "-" + gain : "+" + -gain}%</span><span class="meta">${o.toUpperCase()} / ${outSpec()}<br>${secs.toFixed(1)} s</span><a class="dl" href="${out}" download="${escapeHtml(base)}.${o}">${L.download} .${o.toUpperCase()} <span aria-hidden="true">↓</span></a><button class="again" type="button">${L.again}</button></div>`;
+    flip($(".fc-size", el.outCard), fmtMB(blob.size));
+    ro("gain", `${gain >= 0 ? "-" : "+"}${Math.abs(gain)}%`);
+    $(".again", el.result).onclick = () => { resetResult(); el.go.focus(); };
+    const cmp = $(".cmp", el.result);
+    if (cmp) wireCompare(cmp);
+    setTimeline(100, L.done, false);
+    show(el.result);
+    root.classList.remove("is-done"); void root.offsetWidth; root.classList.add("is-done");
+    if (!reduced && navigator.vibrate) navigator.vibrate(25);
+  }
+
+  function wireCompare(cmp) {
+    const [after, before] = $$("video", cmp);
+    const range = $("input", cmp);
+    range.addEventListener("input", () => cmp.style.setProperty("--x", range.value + "%"));
+    const sync = () => { if (Math.abs(before.currentTime - after.currentTime) > 0.12) before.currentTime = after.currentTime; };
+    after.addEventListener("timeupdate", sync);
+    after.addEventListener("seeked", sync);
+    before.addEventListener("error", () => { before.remove(); $(".divider", cmp).remove(); $(".tag-b", cmp).remove(); range.remove(); });
+    $(".cmp-play", cmp).onclick = () => {
+      if (after.paused) { before.currentTime = after.currentTime; after.play(); before.play().catch(() => {}); }
+      else { after.pause(); before.pause(); }
+    };
+    after.addEventListener("ended", () => before.pause());
+  }
+
+  function resetResult() {
+    show(el.result, false);
+    el.result.innerHTML = "";
+    root.classList.remove("is-done");
+    urls.forEach((u) => URL.revokeObjectURL(u));
+    urls = [];
+  }
 
   function cancel() {
     if (!ffmpeg) return;
@@ -308,17 +415,13 @@ function initTool(root) {
     ffmpeg = null; loading = null;
     info.probing = null; info.inName = null; written = "";
     busy = false;
-    show(el.prog, false);
+    root.classList.remove("is-busy");
     el.cancel.hidden = true;
     el.go.disabled = false;
+    setTimeline(0, L.loaded, false);
     error(L.cancelled);
   }
 
-  function setProg(p, label) {
-    el.bar.style.width = p.toFixed(1) + "%";
-    el.pl.textContent = label;
-    el.pr.textContent = Math.round(p) + "%";
-  }
   function error(msg) { el.err.textContent = msg || ""; show(el.err, !!msg); }
 }
 
@@ -336,18 +439,77 @@ function initCalc(root) {
     const dur = (+f("c-min").value || 0) * 60 + (+f("c-sec").value || 0);
     const mode = f("c-mode").value;
     const a = +f("c-abr").value || 0;
+    root.querySelectorAll("[data-show]").forEach((n) => (n.hidden = n.dataset.show !== mode));
     if (!dur) { out.textContent = "-"; return; }
     if (mode === "size") {
       const v = +f("c-vbr").value || 0;
-      const mb = ((v + a) * dur) / 8 / 1024;
-      out.textContent = `${L.size}: ~${mb.toFixed(1)} MB`;
+      out.textContent = `${L.size}: ~${(((v + a) * dur) / 8 / 1024).toFixed(1)} MB`;
     } else {
       const t = +f("c-target").value || 0;
       const v = Math.floor((t * 8192 * 0.94) / dur - a);
       out.textContent = v > 0 ? `${L.vbr}: ~${v} kbps` : L.tooSmall;
     }
-    root.querySelectorAll("[data-show]").forEach((n) => (n.hidden = n.dataset.show !== mode));
   };
   root.addEventListener("input", run);
   run();
 }
+
+// ---------- Digital Ebru: mathematical marbling seeded by data ----------
+// Drops push existing paint outward (p' = c + (p-c)·sqrt(1 + r²/|p-c|²)), then tines comb the surface.
+function initEbru() {
+  const canvases = $$("canvas.ebru");
+  canvases.forEach(paintEbru);
+  let t;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => canvases.forEach(paintEbru), 200); });
+}
+
+function paintEbru(cv) {
+  const rect = cv.getBoundingClientRect();
+  if (!rect.width) return;
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  const W = Math.round(rect.width), H = Math.round(rect.height || rect.width * 9 / 16);
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const p = cv.dataset.params ? JSON.parse(cv.dataset.params) : null;
+  const rnd = mulberry(hash(cv.dataset.seed || "x"));
+  const pal = ["#1347FF", "#E63B2E", "#C9FF32", "#171717", "#F4EFE6", "#1347FF", "#E63B2E"];
+  const drops = p ? 7 + Math.round(Math.min(10, (p.fps || 30) / 6)) : 10 + Math.floor(rnd() * 5);
+  const tines = p ? 2 + Math.round(Math.min(6, Math.log2(1 + (p.kbps || 4000) / 1500))) : 3 + Math.floor(rnd() * 3);
+  const sharp = p ? 6 + Math.min(30, p.dur || 10) : 10 + rnd() * 20;
+  const shapes = [];
+  const N = 140;
+  for (let d = 0; d < drops; d++) {
+    const cx = W * (0.12 + rnd() * 0.76), cy = H * (0.15 + rnd() * 0.7);
+    const r = Math.min(W, H) * (0.08 + rnd() * 0.2);
+    for (const s of shapes) for (const pt of s.pts) {
+      const dx = pt[0] - cx, dy = pt[1] - cy, m2 = dx * dx + dy * dy || 1e-6;
+      const k = Math.sqrt(1 + (r * r) / m2);
+      pt[0] = cx + dx * k; pt[1] = cy + dy * k;
+    }
+    const pts = [];
+    for (let i = 0; i < N; i++) { const a = (i / N) * Math.PI * 2; pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); }
+    shapes.push({ pts, color: pal[(d + (p ? (p.codec || "").length : 0)) % pal.length] });
+  }
+  const u = 1 / Math.pow(2, 1 / sharp);
+  for (let t = 0; t < tines; t++) {
+    const vertical = t % 2 === 0;
+    const pos = (vertical ? W : H) * (0.1 + rnd() * 0.8);
+    const z = (vertical ? H : W) * (0.15 + rnd() * 0.25) * (rnd() < 0.5 ? -1 : 1);
+    for (const s of shapes) for (const pt of s.pts) {
+      if (vertical) pt[1] += z * Math.pow(u, Math.abs(pt[0] - pos));
+      else pt[0] += z * Math.pow(u, Math.abs(pt[1] - pos));
+    }
+  }
+  ctx.fillStyle = "#F4EFE6";
+  ctx.fillRect(0, 0, W, H);
+  for (const s of shapes) {
+    ctx.beginPath();
+    s.pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+  }
+}
+function hash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function mulberry(a) { return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }

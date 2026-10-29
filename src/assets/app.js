@@ -148,7 +148,12 @@ function initTool(root) {
 
   function outSpec() {
     const o = el.out.value;
-    if (isAudio(o)) return `${o.toUpperCase()} / ${o === "wav" ? "PCM" : o === "ogg" ? "VORBIS" : o === "m4a" ? "AAC" : "MP3"}`;
+    if (isAudio(o)) {
+      const q = el.q.value;
+      if (o === "wav") return "PCM 16 bit";
+      if (o === "ogg") return `Vorbis q${q === "small" ? 3 : q === "high" ? 7 : 5}`;
+      return `${o === "m4a" ? "AAC" : "LAME"} ${q === "small" ? 128 : q === "high" && o === "mp3" ? 256 : 192} kbps`;
+    }
     if (o === "gif") return `GIF / ${Math.min(+el.res.value || 480, 720)} px`;
     const h = targetHeight();
     return [h ? `${h}p` : null, (L.codecs[el.codec.value] || "").split(" ")[0]].filter(Boolean).join(" / ");

@@ -282,4 +282,5 @@ ${ll("fr", () => true)}
 `);
 if (process.env.CNAME) write("CNAME", process.env.CNAME + "\n");
 write(".nojekyll", "");
+if (BASE === "/") fs.copyFileSync("src/.htaccess", path.join(OUT, ".htaccess"));
 console.log(`built ${pages.length} pages -> ${OUT} (SITE=${SITE}, BASE=${BASE})`);

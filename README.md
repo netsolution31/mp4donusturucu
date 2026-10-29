@@ -4,8 +4,8 @@ Static site: browser-based video converter (ffmpeg.wasm), Turkish first, EN/FR.
 
 ```
 npm install
-SITE_URL=https://mp4donusturucu.com BASE=/ CNAME=mp4donusturucu.com node build.mjs   # custom domain
-SITE_URL=https://netsolution31.github.io/mp4donusturucu BASE=/mp4donusturucu/ node build.mjs   # GitHub Pages project URL
+./deploy.sh        # build for https://mp4donusturucu.com and upload over SSH (N0C, host "mp4donusturucu" in ~/.ssh/config)
 ```
 
-Output in `dist/`, deployed to the `gh-pages` branch.
+Production: https://mp4donusturucu.com (N0C / PlanetHoster, public_html).
+The old GitHub Pages URL (gh-pages branch) only contains redirects to the domain.
